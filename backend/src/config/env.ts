@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-const required = ['PORT', 'JWT_SECRET', 'DATABASE_URL'];
+const required = ['JWT_SECRET', 'DATABASE_URL'];
 
 const parseBoolean = (value: string | undefined, defaultValue: boolean) => {
   if (value === undefined) {
