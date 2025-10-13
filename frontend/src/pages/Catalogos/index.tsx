@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DataTable } from '@/components/cards/DataTable';
+import { Column, DataTable } from '@/components/cards/DataTable';
 import api from '@/lib/api';
 
 interface Cliente {
@@ -22,19 +22,21 @@ export const CatalogosPage = () => {
     }
   });
 
+  const columns: Column<Cliente>[] = [
+    { header: 'Código', accessor: 'codigo' },
+    { header: 'Razón social', accessor: 'razon_social' },
+    { header: 'RFC', accessor: 'nif' },
+    { header: 'Límite crédito', accessor: 'limite_credito' },
+    { header: 'Saldo', accessor: 'saldo' },
+    { header: 'Estado', accessor: 'estado' }
+  ];
+
   return (
     <div className="space-y-6">
-      <DataTable
+      <DataTable<Cliente>
         title="Clientes activos"
         data={data ?? []}
-        columns={[
-          { header: 'Código', accessor: 'codigo' },
-          { header: 'Razón social', accessor: 'razon_social' },
-          { header: 'RFC', accessor: 'nif' },
-          { header: 'Límite crédito', accessor: 'limite_credito' },
-          { header: 'Saldo', accessor: 'saldo' },
-          { header: 'Estado', accessor: 'estado' }
-        ]}
+        columns={columns}
       />
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Políticas de crédito</h3>

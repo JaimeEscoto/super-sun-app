@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DataTable } from '@/components/cards/DataTable';
+import { Column, DataTable } from '@/components/cards/DataTable';
 import api from '@/lib/api';
 
 interface Pedido {
@@ -21,19 +21,21 @@ export const VentasPage = () => {
     }
   });
 
+  const columns: Column<Pedido>[] = [
+    { header: 'Pedido', accessor: 'id' },
+    { header: 'Cliente', accessor: 'cliente_id' },
+    { header: 'Fecha', accessor: 'fecha' },
+    { header: 'Estado', accessor: 'estado' },
+    { header: 'Total', accessor: 'total' },
+    { header: 'Moneda', accessor: 'moneda' }
+  ];
+
   return (
     <div className="space-y-6">
-      <DataTable
+      <DataTable<Pedido>
         title="Pedidos de venta"
         data={data ?? []}
-        columns={[
-          { header: 'Pedido', accessor: 'id' },
-          { header: 'Cliente', accessor: 'cliente_id' },
-          { header: 'Fecha', accessor: 'fecha' },
-          { header: 'Estado', accessor: 'estado' },
-          { header: 'Total', accessor: 'total' },
-          { header: 'Moneda', accessor: 'moneda' }
-        ]}
+        columns={columns}
       />
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Política comercial</h3>

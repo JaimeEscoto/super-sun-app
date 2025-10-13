@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DataTable } from '@/components/cards/DataTable';
+import { Column, DataTable } from '@/components/cards/DataTable';
 import api from '@/lib/api';
 
 interface Asiento {
@@ -21,18 +21,20 @@ export const ContabilidadPage = () => {
     }
   });
 
+  const columns: Column<Asiento>[] = [
+    { header: 'Fecha', accessor: 'fecha' },
+    { header: 'Diario', accessor: 'diario' },
+    { header: 'Descripción', accessor: 'descripcion' },
+    { header: 'Debe', accessor: 'total_debe' },
+    { header: 'Haber', accessor: 'total_haber' }
+  ];
+
   return (
     <div className="space-y-6">
-      <DataTable
+      <DataTable<Asiento>
         title="Diario general"
         data={data ?? []}
-        columns={[
-          { header: 'Fecha', accessor: 'fecha' },
-          { header: 'Diario', accessor: 'diario' },
-          { header: 'Descripción', accessor: 'descripcion' },
-          { header: 'Debe', accessor: 'total_debe' },
-          { header: 'Haber', accessor: 'total_haber' }
-        ]}
+        columns={columns}
       />
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Cierres y estados financieros</h3>

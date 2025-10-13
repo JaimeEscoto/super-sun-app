@@ -1,19 +1,19 @@
 import { ReactNode } from 'react';
 
-interface Column<T> {
+export interface Column<T extends object> {
   header: string;
   accessor: keyof T;
   render?: (value: T[keyof T], row: T) => ReactNode;
 }
 
-interface DataTableProps<T> {
+export interface DataTableProps<T extends object> {
   title: string;
   columns: Column<T>[];
   data: T[];
   emptyMessage?: string;
 }
 
-export function DataTable<T extends Record<string, unknown>>({
+export function DataTable<T extends object>({
   title,
   columns,
   data,

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DataTable } from '@/components/cards/DataTable';
+import { Column, DataTable } from '@/components/cards/DataTable';
 import api from '@/lib/api';
 
 interface Factura {
@@ -22,19 +22,21 @@ export const FacturacionPage = () => {
     }
   });
 
+  const columns: Column<Factura>[] = [
+    { header: 'Número', accessor: 'numero' },
+    { header: 'Cliente', accessor: 'cliente_id' },
+    { header: 'Emisión', accessor: 'fecha_emision' },
+    { header: 'Moneda', accessor: 'moneda' },
+    { header: 'Total', accessor: 'total' },
+    { header: 'Estado', accessor: 'estado' }
+  ];
+
   return (
     <div className="space-y-6">
-      <DataTable
+      <DataTable<Factura>
         title="Facturas emitidas"
         data={data ?? []}
-        columns={[
-          { header: 'Número', accessor: 'numero' },
-          { header: 'Cliente', accessor: 'cliente_id' },
-          { header: 'Emisión', accessor: 'fecha_emision' },
-          { header: 'Moneda', accessor: 'moneda' },
-          { header: 'Total', accessor: 'total' },
-          { header: 'Estado', accessor: 'estado' }
-        ]}
+        columns={columns}
       />
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Facturación electrónica SAT</h3>
