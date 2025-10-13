@@ -7,14 +7,14 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm run start
     envVars:
-      - key: DATABASE_URL
-        fromSecret: supabase-db-url
-      - key: DATABASE_SSL
-        value: "true"
-      - key: DATABASE_SSL_REJECT_UNAUTHORIZED
-        value: "false"
+      - key: SUPABASE_URL
+        fromSecret: supabase-url
+      - key: SUPABASE_ANON_KEY
+        fromSecret: supabase-anon-key
       - key: JWT_SECRET
         fromSecret: jwt-secret
+      - key: JWT_EXPIRES_IN
+        value: "7d"
   - type: static_site
     name: erp-frontend
     plan: free
