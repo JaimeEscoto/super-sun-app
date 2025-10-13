@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DataTable } from '@/components/cards/DataTable';
+import { Column, DataTable } from '@/components/cards/DataTable';
 import api from '@/lib/api';
 
 interface Valuacion {
@@ -18,16 +18,18 @@ export const InventarioPage = () => {
     }
   });
 
+  const columns: Column<Valuacion>[] = [
+    { header: 'Producto', accessor: 'producto_id' },
+    { header: 'Existencias', accessor: 'existencias' },
+    { header: 'Valor total', accessor: 'valor_total' }
+  ];
+
   return (
     <div className="space-y-6">
-      <DataTable
+      <DataTable<Valuacion>
         title="Valuación de inventario"
         data={data ?? []}
-        columns={[
-          { header: 'Producto', accessor: 'producto_id' },
-          { header: 'Existencias', accessor: 'existencias' },
-          { header: 'Valor total', accessor: 'valor_total' }
-        ]}
+        columns={columns}
       />
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Control PEPS y promedio ponderado</h3>

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DataTable } from '@/components/cards/DataTable';
+import { Column, DataTable } from '@/components/cards/DataTable';
 import api from '@/lib/api';
 
 interface OrdenCompra {
@@ -21,19 +21,21 @@ export const ComprasPage = () => {
     }
   });
 
+  const columns: Column<OrdenCompra>[] = [
+    { header: 'OC', accessor: 'id' },
+    { header: 'Proveedor', accessor: 'proveedor_id' },
+    { header: 'Fecha', accessor: 'fecha' },
+    { header: 'Estado', accessor: 'estado' },
+    { header: 'Moneda', accessor: 'moneda' },
+    { header: 'Total', accessor: 'total' }
+  ];
+
   return (
     <div className="space-y-6">
-      <DataTable
+      <DataTable<OrdenCompra>
         title="Órdenes de compra"
         data={data ?? []}
-        columns={[
-          { header: 'OC', accessor: 'id' },
-          { header: 'Proveedor', accessor: 'proveedor_id' },
-          { header: 'Fecha', accessor: 'fecha' },
-          { header: 'Estado', accessor: 'estado' },
-          { header: 'Moneda', accessor: 'moneda' },
-          { header: 'Total', accessor: 'total' }
-        ]}
+        columns={columns}
       />
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Workflow de compras</h3>

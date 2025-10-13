@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DataTable } from '@/components/cards/DataTable';
+import { Column, DataTable } from '@/components/cards/DataTable';
 import api from '@/lib/api';
 
 interface ReporteCartera {
@@ -13,23 +13,23 @@ export const ReportesPage = () => {
   const { data } = useQuery({
     queryKey: ['reportes', 'cartera'],
     queryFn: async () => {
-      const response = await api.get<{ tipo: string; tramo: string; total: string }[]>(
-        '/reportes/cartera'
-      );
+      const response = await api.get<ReporteCartera[]>('/reportes/cartera');
       return response.data;
     }
   });
 
+  const columns: Column<ReporteCartera>[] = [
+    { header: 'Tipo', accessor: 'tipo' },
+    { header: 'Tramo', accessor: 'tramo' },
+    { header: 'Total', accessor: 'total' }
+  ];
+
   return (
     <div className="space-y-6">
-      <DataTable
+      <DataTable<ReporteCartera>
         title="Aging CxC/CxP"
-        data={(data ?? []) as ReporteCartera[]}
-        columns={[
-          { header: 'Tipo', accessor: 'tipo' },
-          { header: 'Tramo', accessor: 'tramo' },
-          { header: 'Total', accessor: 'total' }
-        ]}
+        data={data ?? []}
+        columns={columns}
       />
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Reportes financieros</h3>
