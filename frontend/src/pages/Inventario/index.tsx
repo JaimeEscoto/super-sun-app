@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { Column, DataTable } from '@/components/cards/DataTable';
+import { PageHeader } from '@/components/layout/PageHeader';
 import api from '@/lib/api';
 
 interface Valuacion {
@@ -25,7 +26,11 @@ export const InventarioPage = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Inventario y logística"
+        description="Controla inventario multialmacén, lotes, ubicaciones y valoración costo promedio/PEPS con alertas de reabastecimiento en tiempo real."
+      />
       <DataTable<Valuacion>
         title="Valuación de inventario"
         data={data ?? []}
@@ -34,8 +39,7 @@ export const InventarioPage = () => {
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Control PEPS y promedio ponderado</h3>
         <p className="text-sm text-slate-300">
-          Permite elegir costo predeterminado PEPS o Promedio ponderado, gestionar lotes/series y
-          ejecutar conteos cíclicos con ajustes automáticos y asientos contables.
+          Permite elegir costo predeterminado PEPS o Promedio ponderado, gestionar lotes/series y ejecutar conteos cíclicos con ajustes automáticos y asientos contables.
         </p>
       </div>
     </div>

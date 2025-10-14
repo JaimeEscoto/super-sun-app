@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { Column, DataTable } from '@/components/cards/DataTable';
+import { PageHeader } from '@/components/layout/PageHeader';
 import api from '@/lib/api';
 
 interface Asiento {
@@ -30,7 +31,11 @@ export const ContabilidadPage = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Contabilidad financiera"
+        description="Automatiza pólizas, conciliaciones y estados financieros bajo NIIF Pymes con auditoría y trazabilidad completa."
+      />
       <DataTable<Asiento>
         title="Diario general"
         data={data ?? []}
@@ -39,9 +44,7 @@ export const ContabilidadPage = () => {
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Cierres y estados financieros</h3>
         <p className="text-sm text-slate-300">
-          Automatiza provisiones, depreciaciones y conciliación bancaria. Genera balanza, estado de
-          resultados y flujo de efectivo (método indirecto) con soporte de centros de costo y anexos
-          exigidos por el SAR en Honduras.
+          Automatiza provisiones, depreciaciones y conciliación bancaria. Genera balanza, estado de resultados y flujo de efectivo (método indirecto) con soporte de centros de costo y anexos exigidos por el SAR en Honduras.
         </p>
       </div>
     </div>

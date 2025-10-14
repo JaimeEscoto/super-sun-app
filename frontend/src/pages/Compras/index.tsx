@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { Column, DataTable } from '@/components/cards/DataTable';
+import { PageHeader } from '@/components/layout/PageHeader';
 import api from '@/lib/api';
 
 interface OrdenCompra {
@@ -31,7 +32,11 @@ export const ComprasPage = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Compras estratégicas"
+        description="Supervisa el ciclo de abastecimiento: requisiciones, órdenes, recepciones y facturas de proveedor con presupuesto y retenciones hondureñas."
+      />
       <DataTable<OrdenCompra>
         title="Órdenes de compra"
         data={data ?? []}

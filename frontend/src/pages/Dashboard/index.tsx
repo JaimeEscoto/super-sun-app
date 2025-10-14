@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { Banknote, Boxes, ChartLine, Users } from 'lucide-react';
+import { ArrowUpRight, Banknote, Boxes, ChartLine, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 import { TransactionQuickActions } from '@/components/cards/TransactionQuickActions';
 import { SalesChart } from '@/components/charts/SalesChart';
 import { StatCard } from '@/components/cards/StatCard';
+import { PageHeader } from '@/components/layout/PageHeader';
 import api from '@/lib/api';
 
 interface DashboardMetrics {
@@ -31,17 +33,43 @@ export const DashboardPage = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Tablero ejecutivo"
+        badge="Tiempo real"
+        description="Consolida el pulso comercial, financiero y operativo del ERP en Honduras para tomar decisiones ágiles basadas en KPIs de ventas, inventario y liquidez."
+        actions={
+          <>
+            <Link
+              to="/reportes"
+              className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/20 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/30"
+            >
+              <ArrowUpRight size={16} />
+              Ver analítica avanzada
+            </Link>
+            <Link
+              to="/ventas"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-800/70 bg-slate-900/60 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-primary/40 hover:text-white"
+            >
+              <ArrowUpRight size={16} />
+              Flujo comercial
+            </Link>
+          </>
+        }
+      />
+
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Ventas del mes" value={metrics.ventasMes} icon={<ChartLine className="text-primary" />} />
-        <StatCard title="Margen bruto" value={metrics.margen} icon={<Banknote className="text-primary" />} />
-        <StatCard title="Rotación inventario" value={`${metrics.inventarioDias} días`} icon={<Boxes className="text-primary" />} />
-        <StatCard title="Cartera vencida" value={metrics.carteraVencida} icon={<Users className="text-primary" />} />
+        <StatCard title="Ventas del mes" value={metrics.ventasMes} icon={<ChartLine size={24} />} />
+        <StatCard title="Margen bruto" value={metrics.margen} icon={<Banknote size={24} />} />
+        <StatCard title="Rotación inventario" value={`${metrics.inventarioDias} días`} icon={<Boxes size={24} />} />
+        <StatCard title="Cartera vencida" value={metrics.carteraVencida} icon={<Users size={24} />} />
       </section>
-      <section className="grid gap-4 md:grid-cols-2">
+
+      <section className="grid gap-4 lg:grid-cols-[2fr,1fr]">
         <SalesChart />
         <TransactionQuickActions />
       </section>
+
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Alertas operativas</h3>
         <ul className="space-y-3 text-sm text-slate-300">

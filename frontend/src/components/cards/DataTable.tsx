@@ -20,24 +20,22 @@ export function DataTable<T extends object>({
   emptyMessage = 'Sin datos disponibles'
 }: DataTableProps<T>) {
   return (
-    <div className="card p-6">
-      <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
-      <div className="overflow-auto">
-        <table className="min-w-full divide-y divide-slate-800">
-          <thead className="bg-slate-900/60">
+    <div className="card">
+      <div className="border-b border-slate-800/70 px-6 py-5">
+        <h3 className="text-lg font-semibold text-white">{title}</h3>
+      </div>
+      <div className="overflow-x-auto px-2 pb-4">
+        <table className="min-w-full divide-y divide-slate-800/70 text-left text-sm">
+          <thead className="bg-slate-900/70 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
             <tr>
               {columns.map((column) => (
-                <th
-                  key={String(column.accessor)}
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400"
-                >
+                <th key={String(column.accessor)} scope="col" className="px-4 py-3">
                   {column.header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-slate-800/60">
             {data.length === 0 && (
               <tr>
                 <td colSpan={columns.length} className="px-4 py-6 text-center text-sm text-slate-400">
@@ -45,10 +43,13 @@ export function DataTable<T extends object>({
                 </td>
               </tr>
             )}
-            {data.map((row) => (
-              <tr key={JSON.stringify(row)} className="hover:bg-slate-900/40">
+            {data.map((row, index) => (
+              <tr
+                key={JSON.stringify(row)}
+                className={`transition ${index % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/10'} hover:bg-primary/15`}
+              >
                 {columns.map((column) => (
-                  <td key={String(column.accessor)} className="px-4 py-3 text-sm text-slate-300">
+                  <td key={String(column.accessor)} className="px-4 py-3 text-sm text-slate-200">
                     {column.render ? column.render(row[column.accessor], row) : (row[column.accessor] as ReactNode)}
                   </td>
                 ))}
