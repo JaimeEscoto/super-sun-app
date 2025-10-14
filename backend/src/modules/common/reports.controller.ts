@@ -38,3 +38,13 @@ reportsRouter.get(
     res.json(data);
   }
 );
+
+reportsRouter.get(
+  '/resumen',
+  authorize('reportes:ver'),
+  auditTrail('reportes.resumen'),
+  async (_req: Request, res: Response) => {
+    const data = await service.executiveSummary();
+    res.json(data);
+  }
+);
