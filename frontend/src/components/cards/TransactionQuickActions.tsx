@@ -42,12 +42,12 @@ const TRANSACTIONS: TransactionConfig[] = [
       'Registra una nueva orden de compra con proveedor hondureño, validando presupuesto y retenciones locales.',
     endpoint: '/compras/ordenes',
     buildPayload: (form) => ({
-      proveedor_id: form.tercero || 'PROV-HN-001',
+      proveedor_nombre: form.tercero || 'Proveedor acciones rápidas',
       fecha: form.fecha,
-      estado: 'Borrador',
+      estado: 'BORRADOR',
       moneda: 'HNL',
       total: Number(form.monto || 0),
-      referencia: form.referencia
+      referencia: form.referencia || undefined
     }),
     invalidate: [['compras', 'ordenes']],
     successMessage: 'Orden de compra generada con éxito.'
