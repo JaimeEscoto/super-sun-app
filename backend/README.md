@@ -30,6 +30,7 @@ psql "$DATABASE_URL" -f migrations/001_init.sql
 | `SUPABASE_ANON_KEY` | Clave anónima de Supabase para las operaciones permitidas. |
 | `JWT_SECRET` | Clave de firma para los tokens JWT. |
 | `JWT_EXPIRES_IN` | Tiempo de expiración JWT (por defecto `7d`). |
+| `CORS_ALLOWED_ORIGINS` | Lista de orígenes permitidos separados por coma. Usa `*` para permitir todos. |
 
 Configura las credenciales públicas de Supabase (URL y anon key) desde la consola del proyecto.
 

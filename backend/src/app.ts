@@ -1,4 +1,4 @@
-import cors from 'cors';
+import cors, { type CorsOptions } from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -11,7 +11,19 @@ import { apiRouter } from './routes/index.js';
 export const createApp = () => {
   const app = express();
   app.use(helmet());
-  app.use(cors());
+
+  const allowedOrigins = env.corsAllowedOrigins;
+  const corsOptions: CorsOptions = {
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    }
+  };
+
+  app.use(cors(corsOptions));
   app.use(express.json({ limit: '5mb' }));
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan('combined'));
