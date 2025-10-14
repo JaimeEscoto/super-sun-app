@@ -65,12 +65,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email: DEMO_CREDENTIALS.email,
         role: 'ADMINISTRADOR',
         permissions: [
-          'compras.crear',
-          'ventas.crear',
-          'inventario.crear',
-          'facturacion.crear',
-          'contabilidad.crear',
-          'reportes:ver'
+          'catalogos:ver',
+          'catalogos:crear',
+          'catalogos:editar',
+          'catalogos:aprobar',
+          'catalogos:anular',
+          'inventario:ver',
+          'inventario:movimientos',
+          'compras:gestionar',
+          'ventas:gestionar',
+          'facturacion:emitir',
+          'contabilidad:libros',
+          'reportes:ver',
+          'usuarios:gestionar'
         ]
       };
 
