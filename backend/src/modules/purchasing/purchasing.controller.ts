@@ -35,17 +35,48 @@ const purchaseOrderSchema = Joi.object({
   lineas: Joi.array().items(lineSchema).min(1).required()
 });
 
+const quickPurchaseOrderSchema = Joi.object({
+  proveedor_id: Joi.string().uuid().optional(),
+  proveedor_nombre: Joi.string().allow('', null).default('Proveedor acciones rápidas'),
+  proveedor_rtn: Joi.string().allow('', null),
+  fecha: Joi.date().iso().required(),
+  moneda: Joi.string().required(),
+  estado: Joi.string().default('BORRADOR'),
+  total: Joi.number().min(0).required(),
+  condiciones_pago: Joi.string().allow('', null),
+  referencia: Joi.string().allow('', null)
+});
+
 purchasingRouter.post(
   '/ordenes',
   authorize('compras:gestionar'),
   auditTrail('compras.ordenes.crear'),
   async (req: Request, res: Response) => {
-    const { error, value } = purchaseOrderSchema.validate(req.body, { abortEarly: false });
+    const { error, value } = Joi.alternatives()
+      .try(purchaseOrderSchema, quickPurchaseOrderSchema)
+      .validate(req.body, { abortEarly: false, stripUnknown: true });
+
     if (error) {
       return res.status(400).json({ message: 'Datos inválidos', details: error.details });
     }
 
-    const [orden] = await service.createPurchaseOrder(value);
+    if ('proveedorId' in value) {
+      const [orden] = await service.createPurchaseOrder(value);
+      return res.status(201).json({ orden });
+    }
+
+    const orden = await service.createQuickPurchaseOrder({
+      proveedorId: value.proveedor_id,
+      proveedorNombre: value.proveedor_nombre || 'Proveedor acciones rápidas',
+      proveedorRtn: value.proveedor_rtn || undefined,
+      fecha: value.fecha,
+      moneda: value.moneda,
+      estado: value.estado,
+      condicionesPago: value.condiciones_pago || undefined,
+      total: value.total,
+      referencia: value.referencia || undefined
+    });
+
     res.status(201).json({ orden });
   }
 );
