@@ -13,6 +13,7 @@ export const permissions: PermissionMatrix = {
     'ventas:gestionar',
     'facturacion:emitir',
     'contabilidad:libros',
+    'contabilidad:asientos',
     'reportes:ver',
     'usuarios:gestionar'
   ],
