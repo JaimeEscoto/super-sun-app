@@ -15,8 +15,34 @@ interface UserRecord {
   active: boolean;
 }
 
+const DEMO_CREDENTIALS = {
+  email: 'demo@solarishn.com',
+  password: 'Honduras2024!'
+};
+
 export class AuthService {
+  private createDemoSession() {
+    const role: Role = 'ADMINISTRADOR';
+    const user = {
+      id: 'demo-hn',
+      email: DEMO_CREDENTIALS.email,
+      role,
+      permissions: permissions[role]
+    };
+
+    const token = jwt.sign(user, env.jwtSecret, { expiresIn: env.jwtExpiresIn });
+    return { token, user };
+  }
+
+  private isDemoCredentials(email: string, password: string) {
+    return email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password;
+  }
+
   async login(email: string, password: string) {
+    if (this.isDemoCredentials(email, password)) {
+      return this.createDemoSession();
+    }
+
     const [user] = await query<UserRecord>(
       `SELECT id, email, password_hash, role, active FROM users WHERE email = $1`,
       [email]
