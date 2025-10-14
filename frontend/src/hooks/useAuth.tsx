@@ -63,13 +63,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const demoUser: User = {
         id: 'demo-hn',
         email: DEMO_CREDENTIALS.email,
-        role: 'Administrador',
+        role: 'ADMINISTRADOR',
         permissions: [
           'compras.crear',
           'ventas.crear',
           'inventario.crear',
           'facturacion.crear',
-          'contabilidad.crear'
+          'contabilidad.crear',
+          'reportes:ver'
         ]
       };
 
