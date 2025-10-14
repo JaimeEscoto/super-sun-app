@@ -29,12 +29,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
           <Link to="/" className="flex items-center gap-2">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary font-bold">
-              MX
+              HN
             </span>
             {open && (
               <div>
                 <p className="text-sm uppercase tracking-widest text-slate-400">ERP Manufactura</p>
-                <p className="text-lg font-semibold text-white">Solaris MX</p>
+                <p className="text-lg font-semibold text-white">Solaris HN</p>
               </div>
             )}
           </Link>

@@ -36,7 +36,7 @@ export const ReportesPage = () => {
         <p className="text-sm text-slate-300">
           Incluye reportes de ventas por cliente/mes, productos top, cumplimiento de compras,
           valorización de inventario, aging de cartera, balanza, estado de resultados y balance
-          general exportables a Excel/PDF.
+          general exportables a Excel/PDF con parámetros fiscales para Honduras.
         </p>
       </div>
     </div>

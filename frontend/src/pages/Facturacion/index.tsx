@@ -39,11 +39,11 @@ export const FacturacionPage = () => {
         columns={columns}
       />
       <div className="card p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Facturación electrónica SAT</h3>
+        <h3 className="text-lg font-semibold text-white mb-4">Facturación electrónica SAR</h3>
         <p className="text-sm text-slate-300">
-          Plantillas CFDI 4.0 con cálculo de IVA 16%/8%, retenciones ISR/IVA, numeración controlada
-          y timbrado integrado mediante API. Soporta comprobantes en moneda extranjera con tipo de
-          cambio diario BANXICO.
+          Plantillas de factura electrónica hondureña con cálculo de ISV 15%/18%, retenciones de ISR,
+          control de CAI y numeración. Integra envío automático al SAR y soporta moneda extranjera
+          usando tipo de cambio diario del BCH.
         </p>
       </div>
     </div>

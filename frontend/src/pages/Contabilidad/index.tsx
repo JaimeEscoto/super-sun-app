@@ -40,7 +40,8 @@ export const ContabilidadPage = () => {
         <h3 className="text-lg font-semibold text-white mb-4">Cierres y estados financieros</h3>
         <p className="text-sm text-slate-300">
           Automatiza provisiones, depreciaciones y conciliación bancaria. Genera balanza, estado de
-          resultados y flujo de efectivo (método indirecto) con soporte de centros de costo.
+          resultados y flujo de efectivo (método indirecto) con soporte de centros de costo y anexos
+          exigidos por el SAR en Honduras.
         </p>
       </div>
     </div>

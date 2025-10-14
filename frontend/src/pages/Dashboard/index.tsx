@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Banknote, Boxes, ChartLine, Users } from 'lucide-react';
 
+import { TransactionQuickActions } from '@/components/cards/TransactionQuickActions';
 import { SalesChart } from '@/components/charts/SalesChart';
 import { StatCard } from '@/components/cards/StatCard';
 import api from '@/lib/api';
@@ -23,10 +24,10 @@ export const DashboardPage = () => {
   });
 
   const metrics = data ?? {
-    ventasMes: '$0',
-    margen: '$0',
+    ventasMes: 'L 0',
+    margen: 'L 0',
     inventarioDias: '0',
-    carteraVencida: '$0'
+    carteraVencida: 'L 0'
   };
 
   return (
@@ -39,16 +40,17 @@ export const DashboardPage = () => {
       </section>
       <section className="grid gap-4 md:grid-cols-2">
         <SalesChart />
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Alertas operativas</h3>
-          <ul className="space-y-3 text-sm text-slate-300">
-            <li>• 3 pedidos pendientes de aprobación de crédito</li>
-            <li>• 2 órdenes de compra exceden presupuesto</li>
-            <li>• 5 productos con stock por debajo del mínimo</li>
-            <li>• 1 factura electrónica pendiente de timbrado SAT</li>
-          </ul>
-        </div>
+        <TransactionQuickActions />
       </section>
+      <div className="card p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">Alertas operativas</h3>
+        <ul className="space-y-3 text-sm text-slate-300">
+          <li>• 3 pedidos pendientes de aprobación de crédito y RTN.</li>
+          <li>• 2 órdenes de compra exceden presupuestos en lempiras.</li>
+          <li>• 5 productos con stock por debajo del mínimo regional.</li>
+          <li>• 1 factura electrónica pendiente de envío al SAR.</li>
+        </ul>
+      </div>
     </div>
   );
 };
