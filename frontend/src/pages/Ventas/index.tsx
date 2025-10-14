@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { Column, DataTable } from '@/components/cards/DataTable';
+import { PageHeader } from '@/components/layout/PageHeader';
 import api from '@/lib/api';
 
 interface Pedido {
@@ -31,7 +32,11 @@ export const VentasPage = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Ventas y relaciones"
+        description="Gestiona pedidos, seguimiento de clientes y cumplimiento comercial con reglas de crédito, listas de precio y promociones regionales."
+      />
       <DataTable<Pedido>
         title="Pedidos de venta"
         data={data ?? []}
@@ -40,9 +45,7 @@ export const VentasPage = () => {
       <div className="card p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Política comercial</h3>
         <p className="text-sm text-slate-300">
-          Se valida el límite de crédito, listas de precios segmentadas, descuentos por volumen y
-          promociones aplicables según canal de venta, considerando reglas de ISV y exoneraciones
-          hondureñas. Integra reservas de inventario y picking.
+          Se valida el límite de crédito, listas de precios segmentadas, descuentos por volumen y promociones aplicables según canal de venta, considerando reglas de ISV y exoneraciones hondureñas. Integra reservas de inventario y picking.
         </p>
       </div>
     </div>

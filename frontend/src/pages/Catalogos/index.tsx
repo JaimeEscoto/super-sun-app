@@ -6,6 +6,7 @@ import {
   MaintenanceField,
   MaintenanceSection
 } from '@/components/catalogs/MaintenanceSection';
+import { PageHeader } from '@/components/layout/PageHeader';
 import api from '@/lib/api';
 
 const currencyFormatter = new Intl.NumberFormat('es-HN', {
@@ -615,17 +616,22 @@ export const CatalogosPage = () => {
   const activeComponent = tabs.find((tab) => tab.id === activeTab)?.component;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap gap-2">
+    <div className="space-y-8">
+      <PageHeader
+        title="Catálogos maestros"
+        description="Administra los maestros clave de clientes, proveedores, productos, bodegas y parámetros fiscales para Honduras desde un único lugar."
+      />
+
+      <div className="flex flex-wrap gap-3">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`rounded-md px-4 py-2 text-sm font-semibold transition ${
+            className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
               activeTab === tab.id
-                ? 'bg-amber-500 text-slate-950'
-                : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                ? 'border-primary bg-primary/20 text-primary shadow shadow-primary/30'
+                : 'border-slate-800/70 bg-slate-900/60 text-slate-300 hover:border-primary/40 hover:text-white'
             }`}
           >
             {tab.label}

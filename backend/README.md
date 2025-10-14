@@ -40,6 +40,7 @@ Configura las credenciales públicas de Supabase (URL y anon key) desde la conso
 - `npm run start`: ejecuta versión compilada.
 - `npm run lint`: ESLint + reglas de estilo.
 - `npm run test`: pruebas unitarias con Vitest.
+- `npm run seed`: inserta datos de prueba en todas las tablas principales.
 
 ## Despliegue en Render
 
