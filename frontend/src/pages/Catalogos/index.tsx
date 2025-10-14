@@ -25,7 +25,7 @@ export const CatalogosPage = () => {
   const columns: Column<Cliente>[] = [
     { header: 'Código', accessor: 'codigo' },
     { header: 'Razón social', accessor: 'razon_social' },
-    { header: 'RFC', accessor: 'nif' },
+    { header: 'RTN', accessor: 'nif' },
     { header: 'Límite crédito', accessor: 'limite_credito' },
     { header: 'Saldo', accessor: 'saldo' },
     { header: 'Estado', accessor: 'estado' }
@@ -42,7 +42,7 @@ export const CatalogosPage = () => {
         <h3 className="text-lg font-semibold text-white mb-4">Políticas de crédito</h3>
         <p className="text-sm text-slate-300">
           Se evalúa automáticamente el límite de crédito, días de mora y retenciones aplicables por
-          cliente según el régimen fiscal mexicano.
+          cliente según el régimen fiscal hondureño.
         </p>
       </div>
     </div>

@@ -1,7 +1,6 @@
-# ERP Manufactura MX
+# ERP Manufactura HN
 
-Solución ERP lista para producción separada en backend (Node.js + Supabase/PostgreSQL) y frontend (React + Vite) orientada a una empresa
-de manufactura ligera en México (idioma español, moneda MXN, impuestos IVA/ISR).
+Solución ERP lista para producción separada en backend (Node.js + Supabase/PostgreSQL) y frontend (React + Vite) orientada a una empresa de manufactura ligera en Honduras (idioma español, moneda HNL, impuestos ISV/ISR).
 
 ## Estructura
 
@@ -44,7 +43,7 @@ Este repositorio incluye un archivo `render.yaml` para levantar:
 ## Características clave
 
 - Seguridad: JWT, RBAC granular, rate limiting, auditoría estructurada.
-- Módulos: catálogos maestros, inventario (PEPS/promedio), compras, ventas, facturación CFDI, contabilidad con asientos automáticos y reportes financieros.
+- Módulos: catálogos maestros, inventario (PEPS/promedio), compras, ventas, facturación electrónica SAR, contabilidad con asientos automáticos y reportes financieros.
 - Reportes: ventas, compras, inventario, aging CxC/CxP, estados financieros.
 - API `/api/v1` con validaciones y pruebas unitarias base.
 

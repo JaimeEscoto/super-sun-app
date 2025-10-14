@@ -1,4 +1,4 @@
--- ERP inicial para manufactura en México (MXN) con IVA multi-tasa
+-- ERP inicial para manufactura en Honduras (HNL) con ISV multi-tasa
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS condiciones_pago (
 CREATE TABLE IF NOT EXISTS listas_precio (
     lista_precio_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nombre TEXT NOT NULL,
-    moneda CHAR(3) NOT NULL DEFAULT 'MXN',
+    moneda CHAR(3) NOT NULL DEFAULT 'HNL',
     activa BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS tipos_impuesto (
     tipo_impuesto_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nombre TEXT NOT NULL,
     tasa NUMERIC(5,2) NOT NULL,
-    tipo TEXT NOT NULL CHECK (tipo IN ('IVA','IEPS','RETENCION','EXENTO')),
+    tipo TEXT NOT NULL CHECK (tipo IN ('ISV','ISC','RETENCION','EXENTO')),
     aplicacion TEXT NOT NULL DEFAULT 'VENTA'
 );
 
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS ordenes_compra (
     proveedor_id UUID NOT NULL REFERENCES proveedores(proveedor_id),
     fecha DATE NOT NULL,
     estado TEXT NOT NULL DEFAULT 'BORRADOR',
-    moneda CHAR(3) NOT NULL DEFAULT 'MXN',
+    moneda CHAR(3) NOT NULL DEFAULT 'HNL',
     condiciones_pago TEXT,
     total NUMERIC(14,2) DEFAULT 0,
     impuestos NUMERIC(14,2) DEFAULT 0,
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
     cliente_id UUID NOT NULL REFERENCES clientes(cliente_id),
     fecha DATE NOT NULL,
     estado TEXT NOT NULL DEFAULT 'BORRADOR',
-    moneda CHAR(3) NOT NULL DEFAULT 'MXN',
+    moneda CHAR(3) NOT NULL DEFAULT 'HNL',
     condiciones_pago TEXT,
     vendedor_id UUID REFERENCES usuarios(id),
     total NUMERIC(14,2) DEFAULT 0,
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS facturas (
     cliente_id UUID NOT NULL REFERENCES clientes(cliente_id),
     pedido_id UUID REFERENCES pedidos(pedido_id),
     fecha_emision DATE NOT NULL,
-    moneda CHAR(3) NOT NULL DEFAULT 'MXN',
+    moneda CHAR(3) NOT NULL DEFAULT 'HNL',
     tipo_comprobante TEXT NOT NULL,
     total NUMERIC(14,2) NOT NULL,
     subtotal NUMERIC(14,2) NOT NULL,

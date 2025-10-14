@@ -41,7 +41,8 @@ export const VentasPage = () => {
         <h3 className="text-lg font-semibold text-white mb-4">Política comercial</h3>
         <p className="text-sm text-slate-300">
           Se valida el límite de crédito, listas de precios segmentadas, descuentos por volumen y
-          promociones aplicables según canal de venta. Integra reservas de inventario y picking.
+          promociones aplicables según canal de venta, considerando reglas de ISV y exoneraciones
+          hondureñas. Integra reservas de inventario y picking.
         </p>
       </div>
     </div>

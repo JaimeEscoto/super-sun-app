@@ -1,6 +1,6 @@
 # ERP Frontend
 
-Interfaz React + Vite para el ERP de manufactura en México.
+Interfaz React + Vite para el ERP de manufactura en Honduras.
 
 ## Requisitos
 

@@ -1,6 +1,6 @@
 # ERP Backend
 
-API REST para ERP de manufactura ligera en México (MXN) con idioma español.
+API REST para ERP de manufactura ligera en Honduras (HNL) con idioma español.
 
 ## Requisitos
 

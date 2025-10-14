@@ -1,8 +1,8 @@
-# ERP Manufactura México (MXN) - Documentación
+# ERP Manufactura Honduras (HNL) - Documentación
 
 ## 1. Alcance
 
-ERP orientado a manufactura ligera en México (idioma español, moneda MXN) cubriendo contabilidad,
+ERP orientado a manufactura ligera en Honduras (idioma español, moneda HNL) cubriendo contabilidad,
 inventario, CRM básico, proveedores, compras, ventas y facturación electrónica.
 
 Roles soportados: Administrador, Contador, Ventas, Compras, Almacén, Auditor.
@@ -49,15 +49,15 @@ erDiagram
 ## 4. Flujos BPMN (texto)
 
 ### Compras
-1. RFQ -> OC (aprobación automática si monto <= MXN 100,000; si excede requiere Administrador).
+1. RFQ -> OC (aprobación automática si monto <= HNL 100,000; si excede requiere Administrador).
 2. Recepción valida cantidades y actualiza `stock`/`kardex` via procedimiento `registrar_ajuste_inventario`.
-3. Factura proveedor crea CxP con retenciones configurables (IVA acreditable 16% / 8%).
+3. Factura proveedor crea CxP con retenciones configurables (ISV acreditable 15% / 18%).
 4. Pago ejecuta conciliación bancaria y asiento contable.
 
 ### Ventas
 1. Cotización -> Pedido (valida crédito y disponibilidad en `stock`).
 2. Picking/Salida genera movimiento y actualiza Kardex.
-3. Factura electrónica genera CFDI, impuestos por línea y asiento contable.
+3. Factura electrónica genera documento SAR, impuestos por línea e integra asiento contable.
 4. Cobro registra aplicación parcial/total y aging CxC.
 
 ### Inventario
@@ -74,7 +74,7 @@ erDiagram
 - RBAC por rol/permisos definidos en `permissions.ts`.
 - Auditoría vía middleware `auditTrail` + tabla `auditoria`.
 - Hash comprobantes, control de numeración fiscal.
-- Cumplimiento SAT CFDI 4.0, retenciones IVA/ISR, RGPD básico (enmascarado en logs).
+- Cumplimiento SAR para factura electrónica hondureña, retenciones ISV/ISR y Ley de Protección de Datos.
 
 ## 6. API REST
 

@@ -43,7 +43,7 @@ export const ComprasPage = () => {
           <li>Solicitud de compra con validación de presupuesto.</li>
           <li>Orden de compra con aprobación automática por monto.</li>
           <li>Recepción actualiza stock y costo promedio.</li>
-          <li>Factura de proveedor genera CxP y retenciones locales (IVA 16%, IVA 8%, exento).</li>
+          <li>Factura de proveedor genera CxP y retenciones locales (ISV 15%, ISV 18%, exento).</li>
         </ol>
       </div>
     </div>
