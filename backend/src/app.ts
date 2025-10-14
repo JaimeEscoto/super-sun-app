@@ -13,9 +13,33 @@ export const createApp = () => {
   app.use(helmet());
 
   const allowedOrigins = env.corsAllowedOrigins;
+
+  const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const originMatchers = allowedOrigins.map<(origin: string) => boolean>((allowedOrigin) => {
+    if (allowedOrigin === '*') {
+      return () => true;
+    }
+
+    if (!allowedOrigin.includes('*')) {
+      return (origin: string) => origin === allowedOrigin;
+    }
+
+    const pattern = `^${allowedOrigin.split('*').map(escapeRegExp).join('.*')}$`;
+    const regex = new RegExp(pattern);
+    return (origin: string) => regex.test(origin);
+  });
+
+  const isOriginAllowed = (origin: string | undefined) => {
+    if (!origin) {
+      return true;
+    }
+
+    return originMatchers.some((matcher) => matcher(origin));
+  };
+
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
 
