@@ -21,9 +21,10 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
+    routes:
+      - type: proxy
+        source: /api/*
+        destination: https://super-sun-app.onrender.com/api/:splat
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: erp-backend
-          type: web
-          property: url
+        value: /api/v1

@@ -37,7 +37,7 @@ Este repositorio incluye un archivo `render.yaml` para levantar:
 1. Configura un proyecto en Supabase y crea una base de datos. Obtén la URL `postgresql://` y el `anon/service role key` para usos futuros.
 2. En Render crea los secrets necesarios (por ejemplo `supabase-db-url` con la URL de conexión y `jwt-secret` con la clave JWT).
 3. Importa el repositorio y permite que Render lea `render.yaml`.
-4. Render aprovisionará ambos servicios y propagará la URL del backend al frontend mediante la variable `VITE_API_URL`.
+4. Render aprovisionará ambos servicios y el Static Site incluye un proxy `/api/*` → backend para evitar CORS; `VITE_API_URL` se fija a `/api/v1`.
 5. Ejecuta las migraciones iniciales desde Render (p. ej. usando `psql` desde un job o conectándote con Supabase SQL Editor).
 
 ## Características clave
