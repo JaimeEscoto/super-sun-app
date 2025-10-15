@@ -33,15 +33,17 @@ export class InventoryService {
     cantidad: number;
     motivo: string;
     costoUnitario?: number;
+    usuarioId?: string;
   }) {
     return query(
-      `SELECT registrar_ajuste_inventario($1, $2, $3, $4, $5) as ajuste_id`,
+      `SELECT registrar_ajuste_inventario($1, $2, $3, $4, $5, $6) as ajuste_id`,
       [
         payload.productoId,
         payload.almacenId,
         payload.cantidad,
         payload.motivo,
-        payload.costoUnitario ?? null
+        payload.costoUnitario ?? null,
+        payload.usuarioId ?? null
       ]
     );
   }

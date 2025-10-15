@@ -23,6 +23,7 @@ export class PurchasingService {
     lineas: Array<{ productoId: string; cantidad: number; precio: number; impuestos: number[] }>;
     condicionesPago: string;
     solicitanteId: string;
+    usuarioId: string;
   }) {
     return query(
       `SELECT crear_orden_compra($1::jsonb) as oc_id`,
@@ -33,7 +34,8 @@ export class PurchasingService {
           moneda: payload.moneda,
           lineas: payload.lineas,
           condicionesPago: payload.condicionesPago,
-          solicitanteId: payload.solicitanteId
+          solicitanteId: payload.solicitanteId,
+          usuarioId: payload.usuarioId
         })
       ]
     );
@@ -49,6 +51,7 @@ export class PurchasingService {
     condicionesPago?: string;
     total: number;
     referencia?: string;
+    usuarioId: string;
   }) {
     let proveedorId = payload.proveedorId;
 
@@ -68,10 +71,10 @@ export class PurchasingService {
     if (!proveedorId) {
       const rtn = payload.proveedorRtn ?? `TEMP-${randomUUID().slice(0, 8).toUpperCase()}`;
       const [created] = await query<{ proveedor_id: string }>(
-        `INSERT INTO proveedores (nombre, nif, direccion, contactos, banco, retenciones, saldo)
-         VALUES ($1, $2, '{}'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb, 0)
+        `INSERT INTO proveedores (nombre, nif, direccion, contactos, banco, retenciones, saldo, created_by)
+         VALUES ($1, $2, '{}'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb, 0, $3)
          RETURNING proveedor_id`,
-        [payload.proveedorNombre, rtn]
+        [payload.proveedorNombre, rtn, payload.usuarioId]
       );
       proveedorId = created.proveedor_id;
     }
@@ -91,8 +94,8 @@ export class PurchasingService {
       total: string;
       impuestos: string;
     }>(
-      `INSERT INTO ordenes_compra (proveedor_id, fecha, estado, moneda, condiciones_pago, total, impuestos)
-       VALUES ($1, $2::date, $3, $4, $5, $6, 0)
+      `INSERT INTO ordenes_compra (proveedor_id, fecha, estado, moneda, condiciones_pago, total, impuestos, created_by)
+       VALUES ($1, $2::date, $3, $4, $5, $6, 0, $7)
        RETURNING oc_id as id, proveedor_id, fecha, estado, moneda, total, impuestos`,
       [
         proveedorId,
@@ -100,7 +103,28 @@ export class PurchasingService {
         payload.estado ?? 'BORRADOR',
         payload.moneda,
         condiciones,
-        payload.total
+        payload.total,
+        payload.usuarioId
+      ]
+    );
+
+    await query(
+      `INSERT INTO transacciones (tipo, referencia_id, descripcion, datos, created_by)
+       VALUES ('ORDEN_COMPRA', $1, $2, $3::jsonb, $4)`,
+      [
+        orden.id,
+        payload.referencia
+          ? `Orden rápida ${payload.referencia}`
+          : 'Orden de compra creada desde acciones rápidas',
+        JSON.stringify({
+          proveedorId,
+          fecha: payload.fecha,
+          moneda: payload.moneda,
+          total: payload.total,
+          estado: payload.estado ?? 'BORRADOR',
+          referencia: payload.referencia ?? null
+        }),
+        payload.usuarioId
       ]
     );
 

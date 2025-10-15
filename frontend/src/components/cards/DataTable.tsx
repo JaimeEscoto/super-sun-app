@@ -21,12 +21,12 @@ export function DataTable<T extends object>({
 }: DataTableProps<T>) {
   return (
     <div className="card">
-      <div className="border-b border-slate-800/70 px-6 py-5">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+      <div className="border-b border-slate-200 px-6 py-5">
+        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
       </div>
       <div className="overflow-x-auto px-2 pb-4">
-        <table className="min-w-full divide-y divide-slate-800/70 text-left text-sm">
-          <thead className="bg-slate-900/70 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+        <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+          <thead className="bg-slate-100 text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
             <tr>
               {columns.map((column) => (
                 <th key={String(column.accessor)} scope="col" className="px-4 py-3">
@@ -35,10 +35,10 @@ export function DataTable<T extends object>({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60">
+          <tbody className="divide-y divide-slate-200">
             {data.length === 0 && (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-6 text-center text-sm text-slate-400">
+                <td colSpan={columns.length} className="px-4 py-6 text-center text-sm text-slate-500">
                   {emptyMessage}
                 </td>
               </tr>
@@ -46,10 +46,10 @@ export function DataTable<T extends object>({
             {data.map((row, index) => (
               <tr
                 key={JSON.stringify(row)}
-                className={`transition ${index % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/10'} hover:bg-primary/15`}
+                className={`transition ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} hover:bg-primary/5`}
               >
                 {columns.map((column) => (
-                  <td key={String(column.accessor)} className="px-4 py-3 text-sm text-slate-200">
+                  <td key={String(column.accessor)} className="px-4 py-3 text-sm text-slate-700">
                     {column.render ? column.render(row[column.accessor], row) : (row[column.accessor] as ReactNode)}
                   </td>
                 ))}

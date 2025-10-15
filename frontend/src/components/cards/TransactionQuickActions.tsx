@@ -159,16 +159,16 @@ export const TransactionQuickActions = () => {
   const helperText = useMemo(() => selected.description, [selected]);
 
   return (
-    <div className="card p-6 space-y-4">
+    <div className="card space-y-4 p-6">
       <div>
-        <h3 className="text-lg font-semibold text-white">Acciones rápidas</h3>
-        <p className="text-sm text-slate-400">
+        <h3 className="text-lg font-semibold text-slate-900">Acciones rápidas</h3>
+        <p className="text-sm text-slate-600">
           Crea transacciones operativas para compras, ventas, inventario, facturación y contabilidad sin salir del tablero.
         </p>
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="transaction-type" className="text-sm font-medium text-slate-200">
+        <label htmlFor="transaction-type" className="text-sm font-medium text-slate-700">
           Tipo de transacción
         </label>
         <select
@@ -182,7 +182,7 @@ export const TransactionQuickActions = () => {
               setStatus(null);
             }
           }}
-          className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
         >
           {TRANSACTIONS.map((item) => (
             <option key={item.key} value={item.key}>
@@ -192,37 +192,37 @@ export const TransactionQuickActions = () => {
         </select>
       </div>
 
-      <p className="text-xs text-slate-400">{helperText}</p>
+      <p className="text-xs text-slate-500">{helperText}</p>
 
       <form onSubmit={handleSubmit} className="grid gap-4">
         <div className="space-y-1">
-          <label htmlFor="referencia" className="text-sm font-medium text-slate-200">
+          <label htmlFor="referencia" className="text-sm font-medium text-slate-700">
             Referencia / Documento
           </label>
           <input
             id="referencia"
             value={form.referencia}
             onChange={(event) => setForm((prev) => ({ ...prev, referencia: event.target.value }))}
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
             placeholder="Ej. OC-2024-001"
           />
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="tercero" className="text-sm font-medium text-slate-200">
+          <label htmlFor="tercero" className="text-sm font-medium text-slate-700">
             Cliente / Proveedor / Diario
           </label>
           <input
             id="tercero"
             value={form.tercero}
             onChange={(event) => setForm((prev) => ({ ...prev, tercero: event.target.value }))}
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
             placeholder="Ej. PROV-HN-045"
           />
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="monto" className="text-sm font-medium text-slate-200">
+          <label htmlFor="monto" className="text-sm font-medium text-slate-700">
             Monto / Cantidad
           </label>
           <input
@@ -231,13 +231,13 @@ export const TransactionQuickActions = () => {
             step="0.01"
             value={form.monto}
             onChange={(event) => setForm((prev) => ({ ...prev, monto: event.target.value }))}
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
             placeholder="0.00"
           />
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="fecha" className="text-sm font-medium text-slate-200">
+          <label htmlFor="fecha" className="text-sm font-medium text-slate-700">
             Fecha
           </label>
           <input
@@ -245,7 +245,7 @@ export const TransactionQuickActions = () => {
             type="date"
             value={form.fecha}
             onChange={(event) => setForm((prev) => ({ ...prev, fecha: event.target.value }))}
-            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -262,8 +262,8 @@ export const TransactionQuickActions = () => {
         <div
           className={`rounded-lg border px-4 py-3 text-sm ${
             status.type === 'success'
-              ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-300'
-              : 'border-red-400/40 bg-red-400/10 text-red-300'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+              : 'border-red-200 bg-red-50 text-red-700'
           }`}
         >
           {status.message}

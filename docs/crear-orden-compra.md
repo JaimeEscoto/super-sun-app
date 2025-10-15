@@ -38,5 +38,6 @@ Tras guardar la orden:
 
 1. Monitorea el estado desde la tabla **Órdenes de compra recientes**.
 2. Continúa con la **Recepción de mercancía** y la **Factura de proveedor** desde el menú de abastecimiento para completar el ciclo Procure-to-Pay.
+3. El sistema registra automáticamente la transacción en la tabla `transacciones` para dejar trazabilidad del flujo.
 
 > **Tip:** comparte la orden con producción y almacén para validar capacidades antes del envío al proveedor. Esto reduce retrabajos y acelera las aprobaciones.
