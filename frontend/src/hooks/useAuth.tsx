@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   createContext,
   ReactNode,
@@ -47,44 +48,58 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(nextUser);
   }, []);
 
-  const login = useCallback(async (payload: LoginPayload) => {
-    try {
-      const { data } = await api.post<{ token: string; user: User }>('/auth/login', payload);
-      persistSession(data.token, data.user);
-      return data.user;
-    } catch (error) {
-      const isDemoCredentials =
-        payload.email === DEMO_CREDENTIALS.email && payload.password === DEMO_CREDENTIALS.password;
+  const login = useCallback(
+    async (payload: LoginPayload) => {
+      try {
+        const { data } = await api.post<{ token: string; user: User }>('/auth/login', payload);
+        persistSession(data.token, data.user);
+        return data.user;
+      } catch (error) {
+        const isDemoCredentials =
+          payload.email === DEMO_CREDENTIALS.email && payload.password === DEMO_CREDENTIALS.password;
 
-      if (!isDemoCredentials) {
+        if (axios.isAxiosError(error)) {
+          const message = error.response?.data?.message;
+          if (message && typeof message === 'string') {
+            throw new Error(message);
+          }
+
+          if (isDemoCredentials && !error.response) {
+            const demoUser: User = {
+              id: 'demo-hn',
+              email: DEMO_CREDENTIALS.email,
+              role: 'ADMINISTRADOR',
+              permissions: [
+                'catalogos:ver',
+                'catalogos:crear',
+                'catalogos:editar',
+                'catalogos:aprobar',
+                'catalogos:anular',
+                'inventario:ver',
+                'inventario:movimientos',
+                'compras:gestionar',
+                'ventas:gestionar',
+                'facturacion:emitir',
+                'contabilidad:libros',
+                'reportes:ver',
+                'usuarios:gestionar'
+              ]
+            };
+
+            persistSession('demo-token-hn', demoUser);
+            return demoUser;
+          }
+        }
+
+        if (isDemoCredentials) {
+          throw new Error('No se pudo iniciar sesión en modo demostración. Intenta más tarde.');
+        }
+
         throw new Error('Credenciales inválidas, intenta de nuevo.');
       }
-
-      const demoUser: User = {
-        id: 'demo-hn',
-        email: DEMO_CREDENTIALS.email,
-        role: 'ADMINISTRADOR',
-        permissions: [
-          'catalogos:ver',
-          'catalogos:crear',
-          'catalogos:editar',
-          'catalogos:aprobar',
-          'catalogos:anular',
-          'inventario:ver',
-          'inventario:movimientos',
-          'compras:gestionar',
-          'ventas:gestionar',
-          'facturacion:emitir',
-          'contabilidad:libros',
-          'reportes:ver',
-          'usuarios:gestionar'
-        ]
-      };
-
-      persistSession('demo-token-hn', demoUser);
-      return demoUser;
-    }
-  }, [persistSession]);
+    },
+    [persistSession]
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');

@@ -1,5 +1,15 @@
 import axios from 'axios';
 
+const redirectToLogin = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+
+  const isLoginRoute = window.location.pathname.startsWith('/login');
+  if (!isLoginRoute) {
+    window.location.href = '/login?sessionExpired=1';
+  }
+};
+
 const apiBase = (() => {
   if (!import.meta.env.VITE_API_URL) {
     return '/api/v1';
@@ -29,5 +39,15 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      redirectToLogin();
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;
