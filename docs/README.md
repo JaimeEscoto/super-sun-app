@@ -97,3 +97,4 @@ GET /api/v1/reportes/cartera
 ## 8. Recursos adicionales
 
 - [Guía de pruebas con Postman](./postman-pruebas.md)
+- [Datos de ejemplo en SQL](./documentos-ejemplo.sql)
