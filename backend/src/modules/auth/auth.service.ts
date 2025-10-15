@@ -44,7 +44,16 @@ export class AuthService {
     }
 
     const [user] = await query<UserRecord>(
-      `SELECT id, email, password_hash, role, active FROM users WHERE email = $1`,
+      `
+        SELECT
+          id,
+          email,
+          password_hash,
+          rol AS role,
+          activo AS active
+        FROM usuarios
+        WHERE email = $1
+      `,
       [email]
     );
 
