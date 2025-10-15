@@ -19,6 +19,7 @@ Ejecutar migraciones iniciales:
 
 ```bash
 psql "$DATABASE_URL" -f migrations/001_init.sql
+psql "$DATABASE_URL" -f migrations/002_transactions.sql
 ```
 
 ### Variables de entorno
@@ -61,6 +62,7 @@ El archivo `render.yaml` en la raíz automatiza esta configuración y vincula el
 - `src/middleware`: autenticación JWT, autorización RBAC y auditoría.
 - `src/db`: pool PostgreSQL y utilidades de consulta.
 - `migrations/001_init.sql`: esquema relacional inicial y vistas de reportes.
+- `migrations/002_transactions.sql`: tabla de `transacciones`, movimientos de inventario y funciones para generar órdenes, pedidos y ajustes.
 
 ## Seguridad
 

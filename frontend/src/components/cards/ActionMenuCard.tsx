@@ -19,25 +19,25 @@ interface ActionMenuCardProps {
 
 export const ActionMenuCard = ({ title, description, items, footer }: ActionMenuCardProps) => {
   return (
-    <div className="card p-6 space-y-6">
+    <div className="card space-y-6 p-6">
       <header className="space-y-2">
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
-        <p className="text-sm text-slate-300">{description}</p>
+        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+        <p className="text-sm text-slate-600">{description}</p>
       </header>
       <div className="space-y-4">
         {items.map((item) => (
           <div
             key={item.title}
-            className="flex flex-col gap-4 rounded-xl border border-slate-800 bg-slate-900/50 p-4 transition hover:border-emerald-500/50 hover:bg-slate-900"
+            className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-emerald-400/50 hover:bg-emerald-50"
           >
             <div className="flex items-start gap-4">
-              <div className="rounded-full bg-emerald-500/10 p-2 text-emerald-400">
+              <div className="rounded-full bg-emerald-500/10 p-2 text-emerald-500">
                 <item.icon className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-sm font-semibold text-white">{item.title}</h4>
-                <p className="text-xs text-slate-300">{item.description}</p>
-                {item.helper ? <div className="text-xs text-slate-400">{item.helper}</div> : null}
+                <h4 className="text-sm font-semibold text-slate-900">{item.title}</h4>
+                <p className="text-xs text-slate-600">{item.description}</p>
+                {item.helper ? <div className="text-xs text-slate-500">{item.helper}</div> : null}
               </div>
             </div>
             <div className="flex items-center justify-end">
@@ -52,7 +52,7 @@ export const ActionMenuCard = ({ title, description, items, footer }: ActionMenu
           </div>
         ))}
       </div>
-      {footer ? <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-4 text-xs text-slate-400">{footer}</div> : null}
+      {footer ? <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">{footer}</div> : null}
     </div>
   );
 };

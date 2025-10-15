@@ -1,8 +1,9 @@
-import { Request, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import Joi from 'joi';
 
-import { authorize } from '../../middleware/auth.js';
+import { AuthenticatedRequest, authorize } from '../../middleware/auth.js';
 import { auditTrail } from '../../middleware/audit.js';
+import { UnauthorizedError } from '../common/errors.js';
 import { PurchasingService } from './purchasing.service.js';
 
 const service = new PurchasingService();
@@ -12,7 +13,7 @@ purchasingRouter.get(
   '/ordenes',
   authorize('compras:gestionar'),
   auditTrail('compras.ordenes.listar'),
-  async (req: Request, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     const status = req.query.estado as string | undefined;
     const data = await service.listPurchaseOrders(status);
     res.json({ data });
@@ -51,7 +52,7 @@ purchasingRouter.post(
   '/ordenes',
   authorize('compras:gestionar'),
   auditTrail('compras.ordenes.crear'),
-  async (req: Request, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     const { error, value } = Joi.alternatives()
       .try(purchaseOrderSchema, quickPurchaseOrderSchema)
       .validate(req.body, { abortEarly: false, stripUnknown: true });
@@ -60,8 +61,12 @@ purchasingRouter.post(
       return res.status(400).json({ message: 'Datos inválidos', details: error.details });
     }
 
+    if (!req.user) {
+      throw new UnauthorizedError('Usuario no autenticado');
+    }
+
     if ('proveedorId' in value) {
-      const [orden] = await service.createPurchaseOrder(value);
+      const [orden] = await service.createPurchaseOrder({ ...value, usuarioId: req.user.id });
       return res.status(201).json({ orden });
     }
 
@@ -74,7 +79,8 @@ purchasingRouter.post(
       estado: value.estado,
       condicionesPago: value.condiciones_pago || undefined,
       total: value.total,
-      referencia: value.referencia || undefined
+      referencia: value.referencia || undefined,
+      usuarioId: req.user.id
     });
 
     res.status(201).json({ orden });

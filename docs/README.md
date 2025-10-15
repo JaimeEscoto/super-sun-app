@@ -39,11 +39,16 @@ erDiagram
     productos ||--o{ facturas_lineas : referencia
     productos ||--o{ stock : controla
     almacenes ||--o{ stock : contiene
+    productos ||--o{ movimientos_inventario : mueve
+    almacenes ||--o{ movimientos_inventario : registra
     asientos ||--o{ asientos_detalle : desglosa
     facturas ||--o{ asientos : genera
     pagos ||--o{ asientos : genera
     recepciones ||--o{ recepciones_lineas : agrupa
     ordenes_compra ||--o{ recepciones : confirma
+    ordenes_compra ||--o{ transacciones : genera
+    pedidos ||--o{ transacciones : genera
+    movimientos_inventario ||--o{ transacciones : registra
 ```
 
 ## 4. Flujos BPMN (texto)
@@ -53,16 +58,18 @@ erDiagram
 2. Recepción valida cantidades y actualiza `stock`/`kardex` via procedimiento `registrar_ajuste_inventario`.
 3. Factura proveedor crea CxP con retenciones configurables (ISV acreditable 15% / 18%).
 4. Pago ejecuta conciliación bancaria y asiento contable.
+5. Cada hito genera una fila en `transacciones` para auditar el flujo Procure-to-Pay.
 
 ### Ventas
 1. Cotización -> Pedido (valida crédito y disponibilidad en `stock`).
 2. Picking/Salida genera movimiento y actualiza Kardex.
 3. Factura electrónica genera documento SAR, impuestos por línea e integra asiento contable.
 4. Cobro registra aplicación parcial/total y aging CxC.
+5. El pedido confirmado queda trazado en `transacciones` con el total comprometido.
 
 ### Inventario
 1. Conteo cíclico -> Ajuste -> Revalorización (opcional) con asiento automático.
-2. Movimientos soportan entradas, salidas y transferencias entre almacenes.
+2. Movimientos soportan entradas, salidas y transferencias entre almacenes mediante `movimientos_inventario`.
 
 ### Contabilidad
 1. Integración automática desde compras/ventas/inventario.
