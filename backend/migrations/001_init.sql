@@ -11,6 +11,14 @@ CREATE TABLE IF NOT EXISTS usuarios (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+INSERT INTO usuarios (email, password_hash, rol)
+VALUES (
+    'admin@admin.com',
+    '$2a$10$kmSlIJ/eJCNFlGpxVjmZjOfzOkDvdcGmzeTnvCWxOkCKZFc/TAsxa',
+    'ADMINISTRADOR'
+)
+ON CONFLICT (email) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS condiciones_pago (
     cond_pago_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nombre TEXT NOT NULL,
