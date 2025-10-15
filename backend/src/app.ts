@@ -1,4 +1,4 @@
-import cors from 'cors';
+import cors, { type CorsOptions } from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -12,7 +12,13 @@ export const createApp = () => {
   const app = express();
   app.use(helmet());
 
-  app.use(cors());
+  const allowAllOrigins = env.corsAllowedOrigins.includes('*');
+  const corsOptions: CorsOptions = allowAllOrigins
+    ? { origin: true, credentials: true }
+    : { origin: env.corsAllowedOrigins, credentials: true };
+
+  app.use(cors(corsOptions));
+  app.options('*', cors(corsOptions));
   app.use(express.json({ limit: '5mb' }));
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan('combined'));
