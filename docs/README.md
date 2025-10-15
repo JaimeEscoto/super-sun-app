@@ -93,3 +93,7 @@ GET /api/v1/reportes/cartera
 - Integración SAT (timbrado) con pruebas unitarias.
 - Motor de workflows configurables.
 - Automatización de pruebas end-to-end (Playwright).
+
+## 8. Recursos adicionales
+
+- [Guía de pruebas con Postman](./postman-pruebas.md)
