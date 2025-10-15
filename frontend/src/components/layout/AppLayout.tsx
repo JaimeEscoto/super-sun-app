@@ -1,12 +1,9 @@
 import {
-  Bell,
   LayoutDashboard,
   LogOut,
   Menu,
   Package,
   PieChart,
-  PlusCircle,
-  Search,
   Shield,
   ShoppingBag,
   ShoppingCart,
@@ -26,6 +23,7 @@ interface NavigationItem {
   to: string;
   label: string;
   icon: LucideIcon;
+  description: string;
 }
 
 interface NavigationSection {
@@ -37,46 +35,78 @@ const navigationSections: NavigationSection[] = [
   {
     title: 'Dirección',
     items: [
-      { to: '/', label: 'Tablero ejecutivo', icon: LayoutDashboard },
-      { to: '/reportes', label: 'Analítica y reportes', icon: PieChart }
+      {
+        to: '/',
+        label: 'Tablero ejecutivo',
+        icon: LayoutDashboard,
+        description: 'Monitorea KPIs corporativos, flujo de efectivo y alertas presupuestarias.'
+      },
+      {
+        to: '/reportes',
+        label: 'Analítica y reportes',
+        icon: PieChart,
+        description: 'Construye reportes financieros, de ventas y compras con filtros dinámicos.'
+      }
     ]
   },
   {
     title: 'Operación',
     items: [
-      { to: '/catalogos', label: 'Catálogos maestros', icon: Menu },
-      { to: '/inventario', label: 'Inventario y logística', icon: Warehouse },
-      { to: '/ventas', label: 'Ventas y CRM', icon: ShoppingBag },
-      { to: '/compras', label: 'Compras estratégicas', icon: ShoppingCart },
-      { to: '/facturacion', label: 'Facturación electrónica', icon: Package }
+      {
+        to: '/catalogos',
+        label: 'Catálogos maestros',
+        icon: Menu,
+        description: 'Administra proveedores, productos, listas de precios y unidades de medida.'
+      },
+      {
+        to: '/inventario',
+        label: 'Inventario y logística',
+        icon: Warehouse,
+        description: 'Controla existencias, recepciones, transferencias y costos promedio por almacén.'
+      },
+      {
+        to: '/ventas',
+        label: 'Ventas y CRM',
+        icon: ShoppingBag,
+        description: 'Gestiona oportunidades, cotizaciones y pedidos con seguimiento comercial.'
+      },
+      {
+        to: '/compras',
+        label: 'Compras estratégicas',
+        icon: ShoppingCart,
+        description: 'Crea requisiciones, órdenes y recepciones con flujos de aprobación automáticos.'
+      },
+      {
+        to: '/facturacion',
+        label: 'Facturación electrónica',
+        icon: Package,
+        description: 'Emite facturas SAR, notas de crédito y retenciones con validaciones fiscales.'
+      }
     ]
   },
   {
     title: 'Control interno',
-    items: [{ to: '/contabilidad', label: 'Contabilidad financiera', icon: Shield }]
+    items: [
+      {
+        to: '/contabilidad',
+        label: 'Contabilidad financiera',
+        icon: Shield,
+        description: 'Integra pólizas, conciliaciones y cierres con auditoría completa.'
+      }
+    ]
   }
 ];
 
-const quickNavigation = [
-  { to: '/', label: 'KPIs' },
-  { to: '/catalogos', label: 'Maestros' },
-  { to: '/inventario', label: 'Inventario' },
-  { to: '/ventas', label: 'Ventas' },
-  { to: '/compras', label: 'Compras' },
-  { to: '/facturacion', label: 'Facturación' },
-  { to: '/contabilidad', label: 'Contabilidad' },
-  { to: '/reportes', label: 'Reportes' }
-];
+type NavigationItemWithSection = NavigationItem & { section: string };
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const location = useLocation();
 
   const menuItems = useMemo(
     () =>
-      navigationSections.flatMap((section) =>
+      navigationSections.flatMap<NavigationItemWithSection>((section) =>
         section.items.map((item) => ({
           ...item,
           section: section.title
@@ -87,6 +117,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
   const activeItem = menuItems.find((item) => item.to === location.pathname);
   const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : 'HN';
+
+  const defaultDescription =
+    'Selecciona un módulo para navegar por los procesos clave del ERP y utiliza los accesos directos para cambiar de área de trabajo rápidamente.';
 
   return (
     <div className="min-h-screen flex text-slate-100">
@@ -126,11 +159,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <div className="mt-3 flex flex-col gap-1">
                   {section.items.map((item) => {
                     const Icon = item.icon;
-                    return (
-                      <NavLink
-                        key={item.to}
-                        to={item.to}
-                        className={({ isActive }) =>
+                  return (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={({ isActive }) =>
                           [
                             'group flex items-center rounded-xl px-3 py-2 text-sm font-medium transition',
                             open ? 'gap-3 justify-start' : 'gap-0 justify-center',
@@ -145,7 +178,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                         >
                           <Icon size={18} />
                         </span>
-                        {open && <span className="truncate">{item.label}</span>}
+                        {open && (
+                          <span className="flex flex-col truncate">
+                            <span className="truncate text-sm font-medium">{item.label}</span>
+                            <span className="text-xs font-normal text-slate-400">{item.description}</span>
+                          </span>
+                        )}
                       </NavLink>
                     );
                   })}
@@ -186,60 +224,48 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
       <div className="flex flex-1 flex-col">
         <header className="border-b border-slate-800/60 bg-slate-950/80 backdrop-blur">
-          <div className="flex flex-col gap-5 px-6 py-6 sm:px-8">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div className="space-y-1">
+          <div className="flex flex-col gap-6 px-6 py-6 sm:px-8">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="space-y-2">
                 <p className="text-xs uppercase tracking-[0.4em] text-slate-500">
                   {activeItem?.section ?? 'Panel central'}
                 </p>
                 <h1 className="text-2xl font-semibold text-white md:text-3xl">
                   {activeItem?.label ?? 'Resumen general'}
                 </h1>
+                <p className="max-w-3xl text-sm text-slate-300">
+                  {activeItem?.description ?? defaultDescription}
+                </p>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="hidden items-center gap-2 rounded-full border border-slate-800/70 bg-slate-900/70 px-4 py-2 text-sm text-slate-300 shadow-sm shadow-slate-950/20 md:flex">
-                  <Search size={16} className="text-slate-500" />
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                    placeholder="Buscar módulo o transacción..."
-                    className="w-60 bg-transparent text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none"
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/20 px-4 py-2 text-sm font-semibold text-primary transition hover:bg-primary/30"
-                >
-                  <PlusCircle size={16} />
-                  <span className="hidden sm:inline">Nuevo registro</span>
-                </button>
-                <button
-                  type="button"
-                  className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-800/70 bg-slate-900/70 text-slate-300 transition hover:border-primary/40 hover:text-white"
-                  aria-label="Notificaciones"
-                >
-                  <Bell size={18} />
-                  <span className="absolute right-1 top-1 inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
-                </button>
+              <div className="rounded-2xl border border-slate-800/70 bg-slate-900/60 p-4 text-xs text-slate-300 shadow-inner shadow-slate-950/40 lg:max-w-sm">
+                <p className="font-semibold text-white">Consejo de navegación</p>
+                <p className="mt-1 leading-relaxed">
+                  Explora cada módulo desde el menú lateral o selecciona un acceso directo a continuación para ir directo al proceso que necesitas.
+                </p>
               </div>
             </div>
 
-            <nav className="flex flex-wrap items-center gap-2">
-              {quickNavigation.map((item) => (
+            <nav className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {menuItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
                     [
-                      'rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] transition',
+                      'group flex items-start gap-3 rounded-2xl border px-4 py-4 transition',
                       isActive
-                        ? 'border-primary bg-primary/20 text-primary shadow shadow-primary/30'
-                        : 'border-slate-800/70 bg-slate-900/60 text-slate-300 hover:border-primary/40 hover:text-white'
+                        ? 'border-primary/70 bg-primary/15 shadow-lg shadow-primary/20'
+                        : 'border-slate-800/70 bg-slate-900/60 hover:border-primary/50 hover:bg-slate-900'
                     ].join(' ')
                   }
                 >
-                  {item.label}
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-800/60 bg-slate-900 text-primary transition group-hover:border-primary/40 group-hover:text-primary">
+                    <item.icon size={18} />
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-white">{item.label}</p>
+                    <p className="text-xs text-slate-300">{item.description}</p>
+                  </div>
                 </NavLink>
               ))}
             </nav>

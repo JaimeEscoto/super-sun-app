@@ -98,3 +98,4 @@ GET /api/v1/reportes/cartera
 
 - [Guía de pruebas con Postman](./postman-pruebas.md)
 - [Datos de ejemplo en SQL](./documentos-ejemplo.sql)
+- [Creación de órdenes de compra](./crear-orden-compra.md)

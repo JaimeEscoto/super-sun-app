@@ -6,6 +6,8 @@ import { Column, DataTable } from '@/components/cards/DataTable';
 import { PageHeader } from '@/components/layout/PageHeader';
 import api from '@/lib/api';
 
+import { PurchaseOrderForm } from './PurchaseOrderForm';
+
 interface OrdenCompra {
   id: string;
   proveedor_id: string;
@@ -39,48 +41,69 @@ export const ComprasPage = () => {
         title="Compras estratégicas"
         description="Supervisa el ciclo de abastecimiento: requisiciones, órdenes, recepciones y facturas de proveedor con presupuesto y retenciones hondureñas."
       />
-      <div className="grid gap-6 lg:grid-cols-[320px,1fr] xl:grid-cols-[360px,1fr]">
-        <ActionMenuCard
-          title="Menú de abastecimiento"
-          description="Define qué deseas registrar y el sistema abrirá el formulario correspondiente en el panel principal."
-          items={[
-            {
-              title: 'Requisición interna',
-              description:
-                'Captura las necesidades por centro de costo y envíalas para validación automática del presupuesto asignado.',
-              icon: ClipboardList,
-              actionLabel: 'Crear requisición'
-            },
-            {
-              title: 'Orden de compra',
-              description:
-                'Genera la orden con el proveedor seleccionado, condiciones de pago y retenciones configuradas para Honduras.',
-              icon: FileSpreadsheet,
-              actionLabel: 'Emitir orden'
-            },
-            {
-              title: 'Recepción de mercancía',
-              description: 'Agenda la entrada a bodega y actualiza inventario con control de lotes y costos promedio.',
-              icon: Truck,
-              actionLabel: 'Registrar recepción'
-            },
-            {
-              title: 'Factura de proveedor',
-              description:
-                'Registra la factura electrónica con cálculo automático de ISV, retenciones y generación de cuentas por pagar.',
-              icon: ReceiptText,
-              actionLabel: 'Capturar factura'
-            }
-          ]}
-          footer="El flujo aplica reglas de aprobación por monto, notificaciones y seguimiento de entregables con indicadores de cumplimiento."
-        />
+      <div className="grid gap-6 xl:grid-cols-[1.7fr,1fr]">
         <div className="space-y-6">
+          <PurchaseOrderForm />
+          <div className="card space-y-4 p-6">
+            <h3 className="text-lg font-semibold text-white">Buenas prácticas de abastecimiento</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4">
+                <h4 className="text-sm font-semibold text-emerald-200">Planeación colaborativa</h4>
+                <p className="mt-2 text-xs text-emerald-100">
+                  Comparte la orden con producción y almacén para confirmar capacidades antes del envío al proveedor.
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-800/70 bg-slate-900/70 p-4">
+                <h4 className="text-sm font-semibold text-white">Seguimiento de entregas</h4>
+                <p className="mt-2 text-xs text-slate-300">
+                  Define hitos de recepción y utiliza indicadores de puntualidad para activar alertas automáticas.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="space-y-6">
+          <ActionMenuCard
+            title="Menú de abastecimiento"
+            description="Selecciona el proceso que necesitas y continúa el flujo en el panel principal."
+            items={[
+              {
+                title: 'Requisición interna',
+                description:
+                  'Captura necesidades por centro de costo y envíalas a aprobación con control presupuestal.',
+                icon: ClipboardList,
+                actionLabel: 'Iniciar requisición'
+              },
+              {
+                title: 'Orden de compra',
+                description:
+                  'Completa el formulario a la izquierda, valida totales y envía a aprobación automática por monto.',
+                icon: FileSpreadsheet,
+                actionLabel: 'Gestionar orden',
+                helper: <span className="text-emerald-200">Usa el formulario mejorado para registrar partidas y condiciones.</span>
+              },
+              {
+                title: 'Recepción de mercancía',
+                description: 'Agenda la entrada a bodega y actualiza inventario con control de lotes y costos promedio.',
+                icon: Truck,
+                actionLabel: 'Registrar recepción'
+              },
+              {
+                title: 'Factura de proveedor',
+                description:
+                  'Registra la factura electrónica con cálculo automático de ISV, retenciones y generación de cuentas por pagar.',
+                icon: ReceiptText,
+                actionLabel: 'Capturar factura'
+              }
+            ]}
+            footer="El flujo aplica reglas de aprobación por monto, notificaciones y seguimiento de entregables con indicadores de cumplimiento."
+          />
           <DataTable<OrdenCompra>
-            title="Órdenes de compra"
+            title="Órdenes de compra recientes"
             data={data ?? []}
             columns={columns}
           />
-          <div className="card p-6 space-y-3">
+          <div className="card space-y-3 p-6">
             <h3 className="text-lg font-semibold text-white">Workflow de compras</h3>
             <ol className="list-decimal list-inside space-y-2 text-sm text-slate-300">
               <li>Solicitud de compra con validación de presupuesto.</li>
