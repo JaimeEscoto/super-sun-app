@@ -97,3 +97,30 @@ GET /api/v1/reportes/cartera
 ## 8. Recursos adicionales
 
 - [Guía de pruebas con Postman](./postman-pruebas.md)
+
+## 9. SQL de referencia
+
+Para crear un usuario con rol de **Administrador** directamente en la base de datos PostgreSQL, puede utilizarse el siguiente script de inserción. Ajusta los valores según tu configuración (por ejemplo, `password_hash` debe generarse con el mismo algoritmo utilizado por la aplicación).
+
+```sql
+INSERT INTO usuarios (
+    id,
+    nombre,
+    email,
+    password_hash,
+    rol,
+    activo,
+    creado_en
+)
+VALUES (
+    gen_random_uuid(),
+    'Administrador General',
+    'admin@empresa.com',
+    '$2b$10$ReemplazarConHashBCryptValido',
+    'ADMIN',
+    TRUE,
+    NOW()
+);
+```
+
+Asegúrate de que la tabla `usuarios` y la columna `rol` acepten el valor `ADMIN`, y de ejecutar el comando con un usuario de base de datos que tenga los permisos necesarios.
