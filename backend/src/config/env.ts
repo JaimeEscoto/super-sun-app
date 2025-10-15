@@ -2,17 +2,6 @@ import 'dotenv/config';
 
 const required = ['JWT_SECRET', 'DATABASE_URL'];
 
-const parseOrigins = (value: string | undefined) => {
-  if (!value) {
-    return ['*'];
-  }
-
-  return value
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter((origin) => origin.length > 0);
-};
-
 const parseBoolean = (value: string | undefined, defaultValue: boolean) => {
   if (value === undefined) {
     return defaultValue;
@@ -40,6 +29,5 @@ export const env = {
   ),
   logLevel: process.env.LOG_LEVEL ?? 'info',
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS ?? 15 * 60 * 1000),
-  rateLimitMax: Number(process.env.RATE_LIMIT_MAX ?? 100),
-  corsAllowedOrigins: parseOrigins(process.env.CORS_ALLOWED_ORIGINS)
+  rateLimitMax: Number(process.env.RATE_LIMIT_MAX ?? 100)
 };
