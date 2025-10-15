@@ -29,5 +29,9 @@ export const env = {
   ),
   logLevel: process.env.LOG_LEVEL ?? 'info',
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS ?? 15 * 60 * 1000),
-  rateLimitMax: Number(process.env.RATE_LIMIT_MAX ?? 100)
+  rateLimitMax: Number(process.env.RATE_LIMIT_MAX ?? 100),
+  corsAllowedOrigins:
+    process.env.CORS_ALLOWED_ORIGINS?.split(',')
+      .map((origin) => origin.trim())
+      .filter((origin) => origin.length > 0) ?? ['*']
 };
