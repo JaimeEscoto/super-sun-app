@@ -12,10 +12,36 @@ export const createApp = () => {
   const app = express();
   app.use(helmet());
 
+  const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const buildMatcher = (pattern: string) => {
+    if (pattern.includes('*')) {
+      const regex = new RegExp(`^${escapeRegExp(pattern).replace(/\\\*/g, '.*')}$`);
+      return (origin: string) => regex.test(origin);
+    }
+
+    return (origin: string) => origin === pattern;
+  };
+
   const allowAllOrigins = env.corsAllowedOrigins.includes('*');
+  const originMatchers = env.corsAllowedOrigins
+    .filter((pattern) => pattern !== '*')
+    .map(buildMatcher);
+
   const corsOptions: CorsOptions = allowAllOrigins
     ? { origin: true, credentials: true }
-    : { origin: env.corsAllowedOrigins, credentials: true };
+    : {
+        origin: (requestOrigin, callback) => {
+          if (!requestOrigin) {
+            callback(null, true);
+            return;
+          }
+
+          const isAllowed = originMatchers.some((matcher) => matcher(requestOrigin));
+
+          callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+        },
+        credentials: true
+      };
 
   app.use(cors(corsOptions));
   app.options('*', cors(corsOptions));
