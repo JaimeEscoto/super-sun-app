@@ -20,14 +20,14 @@ El servidor se expone en `http://localhost:5173` y proxea `/api` al backend cuan
 
 | Variable | Descripción |
 | --- | --- |
-| `VITE_API_URL` | URL pública del backend (por ejemplo, el Web Service de Render). Si no se define se usa el proxy local `/api`. |
+| `VITE_API_URL` | URL base de la API. En Render se fija a `/api/v1` para usar el proxy del Static Site; en local puedes apuntarla a otra URL o dejarla vacía para usar `/api`. |
 
 ## Despliegue en Render
 
 1. Crea un servicio **Static Site** apuntando al directorio `frontend/`.
 2. Usa el build command `npm install && npm run build` y publica `dist/`.
-3. Define la variable `VITE_API_URL` apuntando al dominio del backend desplegado en Render.
-4. Si utilizas `render.yaml`, la variable se genera automáticamente tomando la URL pública del backend.
+3. Configura un rewrite/proxy `/api/*` → backend para evitar CORS (incluido en `render.yaml`).
+4. Define `VITE_API_URL=/api/v1` (viene preconfigurado en `.env.production` y en `render.yaml`).
 
 ## Características
 
