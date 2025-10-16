@@ -263,7 +263,7 @@ GROUP BY f.cliente_id, f.fecha_emision, f.total;
 
 CREATE OR REPLACE VIEW reporte_antiguedad_inventario AS
 SELECT producto_id,
-       'DEFAULT'::uuid AS almacen_id,
+       NULL::uuid AS almacen_id,
        30 AS dias_en_inventario,
        0 AS cantidad,
        0 AS valor
