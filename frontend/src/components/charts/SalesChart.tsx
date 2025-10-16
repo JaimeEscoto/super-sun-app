@@ -19,26 +19,38 @@ export const SalesChart = () => {
   });
 
   return (
-    <div className="card p-6 h-80">
-      <h3 className="text-lg font-semibold text-white mb-4">Ventas por cliente</h3>
+    <div className="relative h-80 overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 text-slate-100 shadow-[0_35px_80px_-45px_rgba(59,130,246,0.7)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.18),transparent_55%)]" />
+      <div className="relative mb-4 flex items-center justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-white/60">Comercial</p>
+          <h3 className="text-lg font-semibold text-white">Ventas por cliente</h3>
+        </div>
+        <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-white/70">Tiempo real</span>
+      </div>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data ?? []}>
           <defs>
             <linearGradient id="colorVentas" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#1d4ed8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#1d4ed8" stopOpacity={0} />
+              <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.9} />
+              <stop offset="95%" stopColor="#60a5fa" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis dataKey="cliente_id" stroke="#cbd5f5" tickLine={false} axisLine={{ stroke: '#1e293b' }} />
-          <YAxis stroke="#cbd5f5" tickLine={false} axisLine={{ stroke: '#1e293b' }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.15)" />
+          <XAxis dataKey="cliente_id" stroke="#e2e8f0" tickLine={false} axisLine={{ stroke: 'rgba(148, 163, 184, 0.25)' }} />
+          <YAxis stroke="#e2e8f0" tickLine={false} axisLine={{ stroke: 'rgba(148, 163, 184, 0.25)' }} />
           <Tooltip
-            contentStyle={{ backgroundColor: '#0b172a', border: '1px solid #1e293b', color: '#fff' }}
+            contentStyle={{
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
+              border: '1px solid rgba(148, 163, 184, 0.3)',
+              color: '#f8fafc'
+            }}
+            labelStyle={{ color: '#e2e8f0' }}
           />
           <Area
             type="monotone"
             dataKey="total_ventas"
-            stroke="#1d4ed8"
+            stroke="#60a5fa"
             fillOpacity={1}
             fill="url(#colorVentas)"
           />

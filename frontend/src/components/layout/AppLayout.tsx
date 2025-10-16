@@ -122,29 +122,29 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     'Selecciona un módulo desde el menú lateral para navegar por los procesos clave del ERP y mantener el flujo operativo controlado.';
 
   return (
-    <div className="min-h-screen flex bg-slate-100 text-slate-900">
+    <div className="min-h-screen flex text-slate-100">
       <aside
-        className={`relative hidden shrink-0 border-r border-slate-800 bg-secondary transition-all duration-300 lg:flex ${
-          open ? 'w-72' : 'w-24'
+        className={`relative hidden shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-2xl transition-all duration-300 lg:flex ${
+          open ? 'w-80' : 'w-24'
         }`}
       >
-        <div className="flex h-full w-full flex-col text-slate-200">
-          <div className="flex items-center justify-between border-b border-slate-800 px-5 py-5">
-            <Link to="/" className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/20 text-lg font-bold text-primary">
+        <div className="flex h-full w-full flex-col">
+          <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
+            <Link to="/" className="flex items-center gap-3 text-white">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-lg font-bold text-primary">
                 HN
               </span>
               {open && (
                 <div className="space-y-0.5">
-                  <p className="text-xs uppercase tracking-[0.45em] text-slate-400">ERP Manufactura</p>
-                  <p className="text-lg font-semibold text-white">Solaris HN</p>
+                  <p className="text-xs uppercase tracking-[0.45em] text-white/60">ERP Manufactura</p>
+                  <p className="text-lg font-semibold">Solaris HN</p>
                 </div>
               )}
             </Link>
             <button
               type="button"
               onClick={() => setOpen((prev) => !prev)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700 bg-secondary text-slate-300 transition hover:border-primary/50 hover:text-primary"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition hover:border-primary/60 hover:text-white"
             >
               <Menu size={18} />
             </button>
@@ -154,9 +154,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             {navigationSections.map((section) => (
               <div key={section.title} className="mb-7 last:mb-0">
                 {open && (
-                  <p className="px-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">{section.title}</p>
+                  <p className="px-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/50">{section.title}</p>
                 )}
-                <div className="mt-3 flex flex-col gap-1">
+                <div className="mt-3 flex flex-col gap-2">
                   {section.items.map((item) => {
                     const Icon = item.icon;
                     return (
@@ -165,23 +165,21 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                         to={item.to}
                         className={({ isActive }) =>
                           [
-                            'group flex items-center rounded-xl px-3 py-2 text-sm font-medium transition',
-                            open ? 'gap-3 justify-start' : 'gap-0 justify-center',
+                            'group flex items-center rounded-2xl px-3 py-2 text-sm font-medium text-white/70 transition backdrop-blur',
+                            open ? 'gap-4 justify-start' : 'gap-0 justify-center',
                             isActive
-                              ? 'bg-primary/20 text-white shadow-inner shadow-primary/30'
-                              : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                              ? 'bg-primary/20 text-white shadow-[0_20px_35px_-25px_rgba(59,130,246,0.7)]'
+                              : 'hover:bg-white/10 hover:text-white'
                           ].join(' ')
                         }
                       >
-                        <span
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-primary transition group-hover:border-primary/50 group-hover:text-primary"
-                        >
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-primary transition group-hover:border-primary/50 group-hover:text-primary">
                           <Icon size={18} />
                         </span>
                         {open && (
                           <span className="flex flex-col truncate">
-                            <span className="truncate text-sm font-medium text-slate-100">{item.label}</span>
-                            <span className="text-xs font-normal text-slate-400">{item.description}</span>
+                            <span className="truncate text-sm font-semibold text-white">{item.label}</span>
+                            <span className="text-xs font-normal text-white/60">{item.description}</span>
                           </span>
                         )}
                       </NavLink>
@@ -192,8 +190,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             ))}
           </nav>
 
-          <div className="mt-auto border-t border-slate-800 px-4 py-6">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
+          <div className="mt-auto border-t border-white/10 px-4 py-6">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
               <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/20 text-base font-semibold text-primary">
                   {initials}
@@ -202,7 +200,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">{user ? user.email : 'Invitado'}</p>
                     {user && (
-                      <p className="text-xs uppercase tracking-[0.35em] text-slate-500">{user.role}</p>
+                      <p className="text-xs uppercase tracking-[0.35em] text-white/50">{user.role}</p>
                     )}
                   </div>
                 )}
@@ -210,7 +208,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   <button
                     type="button"
                     onClick={logout}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700 bg-secondary text-slate-300 transition hover:border-primary/50 hover:text-primary"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-primary/60 hover:text-white"
                     aria-label="Cerrar sesión"
                   >
                     <LogOut size={16} />
@@ -223,36 +221,36 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="border-b border-slate-800 bg-secondary text-slate-100 shadow-lg">
-          <div className="flex flex-col gap-6 px-6 py-6 sm:px-8">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+        <header className="border-b border-white/10 bg-white/5 px-4 py-6 text-slate-100 backdrop-blur-2xl sm:px-8">
+          <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+              <div className="space-y-3">
+                <p className="text-xs uppercase tracking-[0.4em] text-white/60">
                   {activeItem?.section ?? 'Panel central'}
                 </p>
-                <h1 className="text-2xl font-semibold text-white md:text-3xl">
+                <h1 className="text-3xl font-semibold text-white md:text-4xl">
                   {activeItem?.label ?? 'Resumen general'}
                 </h1>
-                <p className="max-w-3xl text-sm text-slate-300">
+                <p className="max-w-3xl text-sm leading-relaxed text-white/70">
                   {activeItem?.description ?? defaultDescription}
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-700 bg-slate-900/60 p-4 text-xs text-slate-300 shadow-inner lg:max-w-sm">
-                <p className="font-semibold text-white">Atajo administrativo</p>
-                <p className="mt-1 leading-relaxed">
-                  Usa el panel lateral para moverte entre módulos y mantener a la vista las transacciones prioritarias de SAP Business One.
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-xs text-white/70 shadow-[0_25px_60px_-35px_rgba(15,23,42,0.9)] lg:max-w-sm">
+                <p className="text-sm font-semibold text-white">Atajo administrativo</p>
+                <p className="mt-2 leading-relaxed">
+                  Usa el menú contextual para ir directo al módulo que necesites y mantén tu foco en una sola transacción por pantalla.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-white/60">
               {menuItems.map((item) => (
                 <span
                   key={item.to}
                   className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 transition ${
                     item.to === activeItem?.to
                       ? 'border-primary/60 bg-primary/20 text-white'
-                      : 'border-slate-700 bg-slate-900/40'
+                      : 'border-white/10 bg-white/5'
                   }`}
                 >
                   <item.icon size={14} />
@@ -265,7 +263,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
         <main className="relative flex-1 overflow-y-auto">
           <div className="relative px-4 py-8 sm:px-8">
-            <div className="mx-auto flex max-w-7xl flex-col gap-10 pb-16">{children}</div>
+            <div className="mx-auto flex max-w-6xl flex-col gap-10 pb-16">{children}</div>
           </div>
         </main>
       </div>
