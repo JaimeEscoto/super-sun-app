@@ -152,11 +152,12 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION crear_pedido(payload JSONB)
-RETURNS UUID
+RETURNS TABLE(pedido_id UUID, codigo TEXT)
 LANGUAGE plpgsql
 AS $$
 DECLARE
     v_pedido_id UUID;
+    v_codigo TEXT;
     v_linea JSONB;
     v_cantidad NUMERIC(14,4);
     v_precio NUMERIC(14,4);
@@ -186,7 +187,7 @@ BEGIN
         NULLIF(payload->>'vendedorId', '')::UUID,
         v_usuario
     )
-    RETURNING pedido_id INTO v_pedido_id;
+    RETURNING pedido_id, codigo INTO v_pedido_id, v_codigo;
 
     FOR v_linea IN SELECT value FROM jsonb_array_elements(payload->'lineas') AS value LOOP
         v_cantidad := COALESCE((v_linea->>'cantidad')::NUMERIC, 0);
@@ -226,7 +227,7 @@ BEGIN
         v_usuario
     );
 
-    RETURN v_pedido_id;
+    RETURN QUERY SELECT v_pedido_id, v_codigo;
 END;
 $$;
 

@@ -2,13 +2,21 @@ import { query, queryWithClient, withTransaction } from '../../db/index.js';
 
 export class SalesService {
   listOrders(status?: string) {
-    const where = status ? 'WHERE estado = $1' : '';
+    const where = status ? 'WHERE p.estado = $1' : '';
     const params = status ? [status] : [];
     return query(
-      `SELECT pedido_id as id, cliente_id, fecha, estado, total, moneda
-       FROM pedidos
+      `SELECT p.pedido_id AS id,
+              p.codigo,
+              p.cliente_id,
+              c.razon_social AS "clienteNombre",
+              p.fecha,
+              p.estado,
+              p.total,
+              p.moneda
+       FROM pedidos p
+       INNER JOIN clientes c ON c.cliente_id = p.cliente_id
        ${where}
-       ORDER BY fecha DESC
+       ORDER BY p.fecha DESC, p.created_at DESC
        LIMIT 100`,
       params
     );
@@ -24,7 +32,7 @@ export class SalesService {
     usuarioId?: string;
   }) {
     return query(
-      `SELECT crear_pedido($1::jsonb) as pedido_id`,
+      `SELECT * FROM crear_pedido($1::jsonb)`,
       [
         JSON.stringify({
           clienteId: payload.clienteId,
