@@ -159,116 +159,143 @@ export const TransactionQuickActions = () => {
   const helperText = useMemo(() => selected.description, [selected]);
 
   return (
-    <div className="card space-y-4 p-6">
-      <div>
-        <h3 className="text-lg font-semibold text-slate-900">Acciones rápidas</h3>
-        <p className="text-sm text-slate-600">
-          Crea transacciones operativas para compras, ventas, inventario, facturación y contabilidad sin salir del tablero.
-        </p>
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 text-slate-100 shadow-2xl overflow-hidden">
+      <div className="grid gap-0 lg:grid-cols-[220px,1fr]">
+        <div className="hidden flex-col border-b border-slate-800 bg-secondary/70 p-4 lg:flex lg:border-b-0 lg:border-r">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
+            Transacciones frecuentes
+          </p>
+          <div className="mt-4 flex-1 space-y-2">
+            {TRANSACTIONS.map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                onClick={() => {
+                  setSelected(item);
+                  setForm(buildDefaultForm());
+                  setStatus(null);
+                }}
+                className={`w-full rounded-xl px-4 py-3 text-left text-sm transition ${
+                  selected.key === item.key
+                    ? 'bg-primary/25 text-white shadow-inner shadow-primary/30'
+                    : 'bg-slate-900/40 text-slate-300 hover:bg-slate-800/80'
+                }`}
+              >
+                <p className="font-semibold">{item.label}</p>
+                <p className="text-xs text-slate-400">{item.description}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-6 p-6">
+          <div className="space-y-1 lg:hidden">
+            <label htmlFor="transaction-type" className="text-sm font-medium text-slate-200">
+              Tipo de transacción
+            </label>
+            <select
+              id="transaction-type"
+              value={selected.key}
+              onChange={(event) => {
+                const next = TRANSACTIONS.find((item) => item.key === event.target.value as TransactionType);
+                if (next) {
+                  setSelected(next);
+                  setForm(buildDefaultForm());
+                  setStatus(null);
+                }
+              }}
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+            >
+              {TRANSACTIONS.map((item) => (
+                <option key={item.key} value={item.key}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-white">{selected.label}</h3>
+            <p className="text-sm text-slate-300">{helperText}</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div className="space-y-1">
+              <label htmlFor="referencia" className="text-sm font-medium text-slate-200">
+                Referencia / Documento
+              </label>
+              <input
+                id="referencia"
+                value={form.referencia}
+                onChange={(event) => setForm((prev) => ({ ...prev, referencia: event.target.value }))}
+                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+                placeholder="Ej. OC-2024-001"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="tercero" className="text-sm font-medium text-slate-200">
+                Cliente / Proveedor / Diario
+              </label>
+              <input
+                id="tercero"
+                value={form.tercero}
+                onChange={(event) => setForm((prev) => ({ ...prev, tercero: event.target.value }))}
+                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+                placeholder="Ej. PROV-HN-045"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="monto" className="text-sm font-medium text-slate-200">
+                Monto / Cantidad
+              </label>
+              <input
+                id="monto"
+                type="number"
+                step="0.01"
+                value={form.monto}
+                onChange={(event) => setForm((prev) => ({ ...prev, monto: event.target.value }))}
+                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="fecha" className="text-sm font-medium text-slate-200">
+                Fecha
+              </label>
+              <input
+                id="fecha"
+                type="date"
+                value={form.fecha}
+                onChange={(event) => setForm((prev) => ({ ...prev, fecha: event.target.value }))}
+                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100 focus:border-primary focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? 'Guardando…' : 'Crear transacción'}
+            </button>
+          </form>
+
+          {status && (
+            <div
+              className={`rounded-lg border px-4 py-3 text-sm ${
+                status.type === 'success'
+                  ? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'
+                  : 'border-red-400/40 bg-red-500/10 text-red-200'
+              }`}
+            >
+              {status.message}
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="space-y-1">
-        <label htmlFor="transaction-type" className="text-sm font-medium text-slate-700">
-          Tipo de transacción
-        </label>
-        <select
-          id="transaction-type"
-          value={selected.key}
-          onChange={(event) => {
-            const next = TRANSACTIONS.find((item) => item.key === event.target.value as TransactionType);
-            if (next) {
-              setSelected(next);
-              setForm(buildDefaultForm());
-              setStatus(null);
-            }
-          }}
-          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
-        >
-          {TRANSACTIONS.map((item) => (
-            <option key={item.key} value={item.key}>
-              {item.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <p className="text-xs text-slate-500">{helperText}</p>
-
-      <form onSubmit={handleSubmit} className="grid gap-4">
-        <div className="space-y-1">
-          <label htmlFor="referencia" className="text-sm font-medium text-slate-700">
-            Referencia / Documento
-          </label>
-          <input
-            id="referencia"
-            value={form.referencia}
-            onChange={(event) => setForm((prev) => ({ ...prev, referencia: event.target.value }))}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
-            placeholder="Ej. OC-2024-001"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <label htmlFor="tercero" className="text-sm font-medium text-slate-700">
-            Cliente / Proveedor / Diario
-          </label>
-          <input
-            id="tercero"
-            value={form.tercero}
-            onChange={(event) => setForm((prev) => ({ ...prev, tercero: event.target.value }))}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
-            placeholder="Ej. PROV-HN-045"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <label htmlFor="monto" className="text-sm font-medium text-slate-700">
-            Monto / Cantidad
-          </label>
-          <input
-            id="monto"
-            type="number"
-            step="0.01"
-            value={form.monto}
-            onChange={(event) => setForm((prev) => ({ ...prev, monto: event.target.value }))}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
-            placeholder="0.00"
-          />
-        </div>
-
-        <div className="space-y-1">
-          <label htmlFor="fecha" className="text-sm font-medium text-slate-700">
-            Fecha
-          </label>
-          <input
-            id="fecha"
-            type="date"
-            value={form.fecha}
-            onChange={(event) => setForm((prev) => ({ ...prev, fecha: event.target.value }))}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:border-primary focus:outline-none"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isSubmitting ? 'Guardando…' : 'Crear transacción'}
-        </button>
-      </form>
-
-      {status && (
-        <div
-          className={`rounded-lg border px-4 py-3 text-sm ${
-            status.type === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-              : 'border-red-200 bg-red-50 text-red-700'
-          }`}
-        >
-          {status.message}
-        </div>
-      )}
     </div>
   );
 };

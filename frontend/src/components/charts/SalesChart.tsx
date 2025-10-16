@@ -25,20 +25,20 @@ export const SalesChart = () => {
         <AreaChart data={data ?? []}>
           <defs>
             <linearGradient id="colorVentas" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f97316" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+              <stop offset="5%" stopColor="#1d4ed8" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#1d4ed8" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis dataKey="cliente_id" stroke="#94a3b8" tickLine={false} axisLine={{ stroke: '#1e293b' }} />
-          <YAxis stroke="#94a3b8" tickLine={false} axisLine={{ stroke: '#1e293b' }} />
+          <XAxis dataKey="cliente_id" stroke="#cbd5f5" tickLine={false} axisLine={{ stroke: '#1e293b' }} />
+          <YAxis stroke="#cbd5f5" tickLine={false} axisLine={{ stroke: '#1e293b' }} />
           <Tooltip
-            contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', color: '#fff' }}
+            contentStyle={{ backgroundColor: '#0b172a', border: '1px solid #1e293b', color: '#fff' }}
           />
           <Area
             type="monotone"
             dataKey="total_ventas"
-            stroke="#f97316"
+            stroke="#1d4ed8"
             fillOpacity={1}
             fill="url(#colorVentas)"
           />
