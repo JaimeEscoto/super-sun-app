@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 
-import { query } from '../../db/index.js';
+import { query, queryWithClient, withTransaction } from '../../db/index.js';
 
 export class PurchasingService {
   listPurchaseOrders(status?: string) {
@@ -129,5 +129,87 @@ export class PurchasingService {
     );
 
     return orden;
+  }
+
+  async createGoodsReceipt(payload: {
+    ocId?: string;
+    fecha: string;
+    almacenId: string;
+    lineas: Array<{ productoId: string; cantidad: number; costo: number }>;
+    referencia?: string;
+    usuarioId?: string;
+  }) {
+    return withTransaction(async (client) => {
+      const [recepcion] = await queryWithClient<{
+        id: string;
+        oc_id: string | null;
+        fecha: string;
+        estado: string;
+      }>(
+        client,
+        `INSERT INTO recepciones (oc_id, fecha, estado, created_by)
+         VALUES ($1, $2::date, 'REGISTRADA', $3)
+         RETURNING recepcion_id as id, oc_id, fecha, estado`,
+        [payload.ocId ?? null, payload.fecha, payload.usuarioId ?? null]
+      );
+
+      const movimientos: Array<{ productoId: string; movimientoId: string }> = [];
+      let total = 0;
+
+      for (const linea of payload.lineas) {
+        total += linea.cantidad * linea.costo;
+
+        await queryWithClient(
+          client,
+          `INSERT INTO recepciones_lineas (recepcion_id, producto_id, cantidad, costo)
+           VALUES ($1, $2, $3, $4)`,
+          [recepcion.id, linea.productoId, linea.cantidad, linea.costo]
+        );
+
+        const [movimiento] = await queryWithClient<{ movimiento_id: string }>(
+          client,
+          `SELECT registrar_ajuste_inventario($1, $2, $3, $4, $5, $6) as movimiento_id`,
+          [
+            linea.productoId,
+            payload.almacenId,
+            Math.abs(linea.cantidad),
+            `Recepción ${recepcion.id}${payload.referencia ? ` (${payload.referencia})` : ''}`,
+            linea.costo,
+            payload.usuarioId ?? null
+          ]
+        );
+
+        movimientos.push({ productoId: linea.productoId, movimientoId: movimiento.movimiento_id });
+      }
+
+      const [transaccion] = await queryWithClient<{ transaccion_id: string }>(
+        client,
+        `INSERT INTO transacciones (tipo, referencia_id, descripcion, datos, created_by)
+         VALUES ('RECEPCION_COMPRA', $1, $2, $3::jsonb, $4)
+         RETURNING transaccion_id`,
+        [
+          recepcion.id,
+          payload.referencia
+            ? `Recepción ${recepcion.id} - ${payload.referencia}`
+            : `Recepción ${recepcion.id}`,
+          JSON.stringify({
+            ocId: payload.ocId ?? null,
+            fecha: payload.fecha,
+            almacenId: payload.almacenId,
+            lineas: payload.lineas,
+            total,
+            movimientos
+          }),
+          payload.usuarioId ?? null
+        ]
+      );
+
+      return {
+        recepcion,
+        total,
+        transaccionId: transaccion.transaccion_id,
+        movimientos
+      };
+    });
   }
 }

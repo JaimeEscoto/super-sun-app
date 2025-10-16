@@ -59,3 +59,36 @@ inventoryRouter.post(
     res.status(201).json({ ajuste });
   }
 );
+
+const transferLineSchema = Joi.object({
+  productoId: Joi.string().uuid().required(),
+  cantidad: Joi.number().positive().required(),
+  costoUnitario: Joi.number().min(0).optional()
+});
+
+const transferSchema = Joi.object({
+  origenId: Joi.string().uuid().required(),
+  destinoId: Joi.string().uuid().invalid(Joi.ref('origenId')).required(),
+  motivo: Joi.string().required(),
+  lineas: Joi.array().items(transferLineSchema).min(1).required()
+});
+
+inventoryRouter.post(
+  '/transferencias',
+  authorize('inventario:movimientos'),
+  auditTrail('inventario.transferencias.crear'),
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { error, value } = transferSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      return res.status(400).json({ message: 'Datos inválidos', details: error.details });
+    }
+
+    if (!req.user) {
+      throw new UnauthorizedError('Usuario no autenticado');
+    }
+
+    const usuarioId = getValidUuid(req.user.id);
+    const transferencia = await service.createTransfer({ ...value, usuarioId });
+    res.status(201).json({ transferencia });
+  }
+);
