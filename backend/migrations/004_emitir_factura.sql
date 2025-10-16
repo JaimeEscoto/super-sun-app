@@ -2,16 +2,15 @@
 CREATE SEQUENCE IF NOT EXISTS factura_numero_seq START WITH 1 INCREMENT BY 1;
 
 -- Alinear la secuencia con el último número usado
+WITH ultimo_numero AS (
+  SELECT MAX((regexp_replace(numero, '^.*-(\\d+)$', '\\1'))::BIGINT) AS max_num
+  FROM facturas
+  WHERE numero ~ '\\d+$'
+)
 SELECT setval(
   'factura_numero_seq',
-  COALESCE(
-    (
-      SELECT MAX((regexp_replace(numero, '^.*-(\\d+)$', '\\1'))::BIGINT)
-      FROM facturas
-      WHERE numero ~ '\\d+$'
-    ),
-    0
-  )
+  COALESCE((SELECT max_num FROM ultimo_numero), 1),
+  (SELECT max_num IS NOT NULL FROM ultimo_numero)
 );
 
 CREATE OR REPLACE FUNCTION emitir_factura(payload JSONB)
