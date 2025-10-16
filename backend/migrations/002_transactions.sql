@@ -63,9 +63,10 @@ DECLARE
     v_precio NUMERIC(14,4);
     v_total NUMERIC(14,2) := 0;
     v_impuestos NUMERIC(14,2) := 0;
-    v_estado TEXT := COALESCE(payload->>'estado', 'BORRADOR');
+    v_estado TEXT := COALESCE(payload->>'estado', 'PENDIENTE');
     v_usuario UUID;
     v_solicitante UUID := NULLIF(payload->>'solicitanteId', '')::UUID;
+    v_numero TEXT := NULLIF(payload->>'numero', '')::TEXT;
 BEGIN
     IF payload->>'proveedorId' IS NULL THEN
         RAISE EXCEPTION 'El proveedor es obligatorio';
@@ -84,13 +85,18 @@ BEGIN
         v_usuario := v_solicitante;
     END IF;
 
-    INSERT INTO ordenes_compra (proveedor_id, fecha, estado, moneda, condiciones_pago, created_by)
+    IF v_numero IS NULL THEN
+        v_numero := 'OC-' || TO_CHAR(now(), 'YYYYMMDD') || '-' || LPAD(nextval('orden_compra_numero_seq')::TEXT, 5, '0');
+    END IF;
+
+    INSERT INTO ordenes_compra (proveedor_id, fecha, estado, moneda, condiciones_pago, numero, created_by)
     VALUES (
         (payload->>'proveedorId')::UUID,
         (payload->>'fecha')::DATE,
         v_estado,
         COALESCE(payload->>'moneda', 'HNL'),
         payload->>'condicionesPago',
+        v_numero,
         v_usuario
     )
     RETURNING oc_id INTO v_oc_id;
@@ -133,6 +139,7 @@ BEGIN
             'proveedorId', payload->>'proveedorId',
         'moneda', COALESCE(payload->>'moneda', 'HNL'),
         'total', v_total + v_impuestos,
+        'numero', v_numero,
         'estado', v_estado,
         'solicitanteId', payload->>'solicitanteId',
         'lineas', payload->'lineas'
