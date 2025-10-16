@@ -15,12 +15,8 @@ npm install
 npm run dev
 ```
 
-Ejecutar migraciones iniciales:
-
-```bash
-psql "$DATABASE_URL" -f migrations/001_init.sql
-psql "$DATABASE_URL" -f migrations/002_transactions.sql
-```
+Las migraciones SQL se ejecutan automáticamente cuando se inicia el servidor (modo dev o producción).
+Si necesitas aplicarlas manualmente puedes hacerlo con `psql` ejecutando los archivos del directorio `migrations/` en orden.
 
 ### Variables de entorno
 
