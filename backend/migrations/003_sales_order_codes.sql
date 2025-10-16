@@ -19,17 +19,17 @@ WHERE ordered.pedido_id = p.pedido_id
   AND p.codigo IS NULL;
 
 -- Ensure the sequence continues after the highest assigned code
+WITH last_seq AS (
+  SELECT MAX((regexp_replace(codigo, '^.+-(\\d+)$', '\\1'))::BIGINT) AS max_seq
+  FROM pedidos
+  WHERE codigo ~ '^SO-\\d{4}-\\d{4}$'
+)
 SELECT setval(
   'pedido_codigo_seq',
-  COALESCE(
-    (
-      SELECT MAX((regexp_replace(codigo, '^.+-(\\d+)$', '\\1'))::BIGINT)
-      FROM pedidos
-      WHERE codigo ~ '^SO-\\d{4}-\\d{4}$'
-    ),
-    0
-  )
-);
+  COALESCE(last_seq.max_seq, 1),
+  last_seq.max_seq IS NOT NULL
+)
+FROM last_seq;
 
 ALTER TABLE pedidos
   ALTER COLUMN codigo SET NOT NULL,
