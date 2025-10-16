@@ -292,11 +292,14 @@ export const ComprasPage = () => {
     );
   }, [productFilter, productos]);
 
+  type InventoryValidationResult = {
+    level: 'ok' | 'warning' | 'info' | 'error';
+    message: string;
+    available: number | null;
+  };
+
   const inventoryValidation = useMemo(() => {
-    const map = new Map<
-      string,
-      { level: 'ok' | 'warning' | 'info' | 'error'; message: string; available: number | null }
-    >();
+    const map = new Map<string, InventoryValidationResult>();
 
     purchaseLines.forEach((linea) => {
       const quantity = Number(linea.cantidad) || 0;
@@ -466,6 +469,21 @@ export const ComprasPage = () => {
     }
 
     return source;
+  };
+
+  const getValidationMessageColor = (validation: InventoryValidationResult | undefined) => {
+    switch (validation?.level) {
+      case 'error':
+        return 'text-rose-600';
+      case 'warning':
+        return 'text-amber-600';
+      case 'info':
+        return 'text-sky-600';
+      case 'ok':
+        return 'text-emerald-600';
+      default:
+        return 'text-slate-500';
+    }
   };
 
   return (
@@ -663,17 +681,13 @@ export const ComprasPage = () => {
                         const subtotal = quantity * price;
                         const taxAmount = subtotal * (linea.taxRate / 100);
                         const validation = inventoryValidation.get(linea.id);
-                        const messageColor = validation
-                          ? validation.level === 'error'
-                            ? 'text-rose-600'
-                            : validation.level === 'warning'
-                            ? 'text-amber-600'
-                            : validation.level === 'info'
-                            ? 'text-sky-600'
-                            : 'text-emerald-600'
-                          : 'text-slate-500';
-
-                        const inputBorder = validation?.level === 'error' ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-200' : 'border-slate-200 focus:border-primary focus:ring-primary/20';
+                        const messageColor = getValidationMessageColor(validation);
+                        const inputBorder =
+                          validation?.level === 'error'
+                            ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-200'
+                            : 'border-slate-200 focus:border-primary focus:ring-primary/20';
+                        const availableStock = validation?.available;
+                        const hasAvailableStock = availableStock != null;
 
                         return (
                           <tr key={linea.id} className="bg-white">
@@ -708,9 +722,9 @@ export const ComprasPage = () => {
                                 onChange={(event) => handlePurchaseLineChange(linea.id, 'cantidad', event.target.value)}
                                 className={`w-full rounded-md px-2 py-1 text-right focus:outline-none focus:ring-2 ${inputBorder}`}
                               />
-                              {validation?.available !== null ? (
+                              {hasAvailableStock ? (
                                 <p className="mt-1 text-xs text-slate-500">
-                                  Stock: {validation.available.toFixed(2)} u.
+                                  Stock: {availableStock.toFixed(2)} u.
                                 </p>
                               ) : null}
                             </td>
@@ -891,52 +905,60 @@ export const ComprasPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {receiptLines.map((linea) => (
-                        <tr key={linea.id} className="bg-white">
-                          <td className="rounded-l-xl border border-slate-200 px-3 py-2">
-                            <select
-                              value={linea.productoId}
-                              onChange={(event) => handleReceiptProductChange(linea.id, event.target.value)}
-                              className="w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-sm"
-                            >
-                              {productOptions}
-                            </select>
-                          </td>
-                          <td className="border border-slate-200 px-3 py-2 text-right">
-                            <input
-                              type="number"
-                              min={0}
-                              step="0.01"
-                              value={linea.cantidad}
-                              onChange={(event) => handleReceiptLineChange(linea.id, 'cantidad', event.target.value)}
-                              className="w-full rounded-md border border-slate-200 px-2 py-1 text-right"
-                            />
-                          </td>
-                          <td className="border border-slate-200 px-3 py-2 text-right">
-                            <input
-                              type="number"
-                              min={0}
-                              step="0.01"
-                              value={linea.costo}
-                              onChange={(event) => handleReceiptLineChange(linea.id, 'costo', event.target.value)}
-                              className="w-full rounded-md border border-slate-200 px-2 py-1 text-right"
-                            />
-                          </td>
-                          <td className="rounded-r-xl border border-slate-200 px-2 text-center">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setReceiptLines((prev) =>
-                                  prev.length === 1 ? prev : prev.filter((item) => item.id !== linea.id)
-                                )
-                              }
-                              className="inline-flex items-center justify-center rounded-md border border-transparent p-1 text-slate-400 hover:text-rose-600"
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {receiptLines.map((linea) => {
+                        const options = getProductOptions(linea.productoId);
+
+                        return (
+                          <tr key={linea.id} className="bg-white">
+                            <td className="rounded-l-xl border border-slate-200 px-3 py-2">
+                              <select
+                                value={linea.productoId}
+                                onChange={(event) => handleReceiptProductChange(linea.id, event.target.value)}
+                                className="w-full rounded-md border border-slate-200 bg-white px-2 py-1 text-sm"
+                              >
+                                {options.map((producto) => (
+                                  <option key={producto.id} value={producto.id}>
+                                    {producto.descripcion} ({producto.sku})
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                            <td className="border border-slate-200 px-3 py-2 text-right">
+                              <input
+                                type="number"
+                                min={0}
+                                step="0.01"
+                                value={linea.cantidad}
+                                onChange={(event) => handleReceiptLineChange(linea.id, 'cantidad', event.target.value)}
+                                className="w-full rounded-md border border-slate-200 px-2 py-1 text-right"
+                              />
+                            </td>
+                            <td className="border border-slate-200 px-3 py-2 text-right">
+                              <input
+                                type="number"
+                                min={0}
+                                step="0.01"
+                                value={linea.costo}
+                                onChange={(event) => handleReceiptLineChange(linea.id, 'costo', event.target.value)}
+                                className="w-full rounded-md border border-slate-200 px-2 py-1 text-right"
+                              />
+                            </td>
+                            <td className="rounded-r-xl border border-slate-200 px-2 text-center">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setReceiptLines((prev) =>
+                                    prev.length === 1 ? prev : prev.filter((item) => item.id !== linea.id)
+                                  )
+                                }
+                                className="inline-flex items-center justify-center rounded-md border border-transparent p-1 text-slate-400 hover:text-rose-600"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
