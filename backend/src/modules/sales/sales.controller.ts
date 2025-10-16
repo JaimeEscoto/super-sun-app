@@ -4,6 +4,7 @@ import Joi from 'joi';
 import { AuthenticatedRequest, authorize } from '../../middleware/auth.js';
 import { auditTrail } from '../../middleware/audit.js';
 import { UnauthorizedError } from '../common/errors.js';
+import { getValidUuid } from '../../utils/uuid.js';
 import { SalesService } from './sales.service.js';
 
 const service = new SalesService();
@@ -50,7 +51,8 @@ salesRouter.post(
       throw new UnauthorizedError('Usuario no autenticado');
     }
 
-    const [pedido] = await service.createOrder({ ...value, usuarioId: req.user.id });
+    const usuarioId = getValidUuid(req.user.id);
+    const [pedido] = await service.createOrder({ ...value, usuarioId });
     res.status(201).json({ pedido });
   }
 );

@@ -4,6 +4,7 @@ import Joi from 'joi';
 import { AuthenticatedRequest, authorize } from '../../middleware/auth.js';
 import { auditTrail } from '../../middleware/audit.js';
 import { UnauthorizedError } from '../common/errors.js';
+import { getValidUuid } from '../../utils/uuid.js';
 import { InventoryService } from './inventory.service.js';
 
 const service = new InventoryService();
@@ -53,7 +54,8 @@ inventoryRouter.post(
       throw new UnauthorizedError('Usuario no autenticado');
     }
 
-    const [ajuste] = await service.createAdjustment({ ...value, usuarioId: req.user.id });
+    const usuarioId = getValidUuid(req.user.id);
+    const [ajuste] = await service.createAdjustment({ ...value, usuarioId });
     res.status(201).json({ ajuste });
   }
 );

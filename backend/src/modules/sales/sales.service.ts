@@ -21,7 +21,7 @@ export class SalesService {
     vendedorId: string;
     condicionesPago: string;
     lineas: Array<{ productoId: string; cantidad: number; precio: number; descuentos?: number }>;
-    usuarioId: string;
+    usuarioId?: string;
   }) {
     return query(
       `SELECT crear_pedido($1::jsonb) as pedido_id`,
@@ -33,7 +33,7 @@ export class SalesService {
           vendedorId: payload.vendedorId,
           condicionesPago: payload.condicionesPago,
           lineas: payload.lineas,
-          usuarioId: payload.usuarioId
+          ...(payload.usuarioId ? { usuarioId: payload.usuarioId } : {})
         })
       ]
     );

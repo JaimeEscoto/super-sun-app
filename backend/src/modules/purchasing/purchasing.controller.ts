@@ -4,6 +4,7 @@ import Joi from 'joi';
 import { AuthenticatedRequest, authorize } from '../../middleware/auth.js';
 import { auditTrail } from '../../middleware/audit.js';
 import { UnauthorizedError } from '../common/errors.js';
+import { getValidUuid } from '../../utils/uuid.js';
 import { PurchasingService } from './purchasing.service.js';
 
 const service = new PurchasingService();
@@ -65,8 +66,10 @@ purchasingRouter.post(
       throw new UnauthorizedError('Usuario no autenticado');
     }
 
+    const usuarioId = getValidUuid(req.user.id);
+
     if ('proveedorId' in value) {
-      const [orden] = await service.createPurchaseOrder({ ...value, usuarioId: req.user.id });
+      const [orden] = await service.createPurchaseOrder({ ...value, usuarioId });
       return res.status(201).json({ orden });
     }
 
@@ -80,7 +83,7 @@ purchasingRouter.post(
       condicionesPago: value.condiciones_pago || undefined,
       total: value.total,
       referencia: value.referencia || undefined,
-      usuarioId: req.user.id
+      usuarioId
     });
 
     res.status(201).json({ orden });
