@@ -32,7 +32,7 @@ const orderSchema = Joi.object({
   clienteId: Joi.string().uuid().required(),
   fecha: Joi.date().iso().required(),
   moneda: Joi.string().required(),
-  vendedorId: Joi.string().uuid().required(),
+  vendedorId: Joi.string().uuid().optional(),
   condicionesPago: Joi.string().required(),
   lineas: Joi.array().items(lineSchema).min(1).required()
 });
@@ -54,5 +54,38 @@ salesRouter.post(
     const usuarioId = getValidUuid(req.user.id);
     const [pedido] = await service.createOrder({ ...value, usuarioId });
     res.status(201).json({ pedido });
+  }
+);
+
+const deliveryLineSchema = Joi.object({
+  productoId: Joi.string().uuid().required(),
+  cantidad: Joi.number().positive().required(),
+  costoUnitario: Joi.number().min(0).optional()
+});
+
+const deliverySchema = Joi.object({
+  pedidoId: Joi.string().uuid().optional(),
+  fecha: Joi.date().iso().required(),
+  almacenId: Joi.string().uuid().required(),
+  lineas: Joi.array().items(deliveryLineSchema).min(1).required()
+});
+
+salesRouter.post(
+  '/entregas',
+  authorize('ventas:gestionar'),
+  auditTrail('ventas.entregas.crear'),
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { error, value } = deliverySchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      return res.status(400).json({ message: 'Datos inválidos', details: error.details });
+    }
+
+    if (!req.user) {
+      throw new UnauthorizedError('Usuario no autenticado');
+    }
+
+    const usuarioId = getValidUuid(req.user.id);
+    const entrega = await service.createDelivery({ ...value, usuarioId });
+    res.status(201).json({ entrega });
   }
 );

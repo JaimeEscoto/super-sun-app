@@ -37,6 +37,20 @@ const purchaseOrderSchema = Joi.object({
   lineas: Joi.array().items(lineSchema).min(1).required()
 });
 
+const goodsReceiptLineSchema = Joi.object({
+  productoId: Joi.string().uuid().required(),
+  cantidad: Joi.number().positive().required(),
+  costo: Joi.number().min(0).required()
+});
+
+const goodsReceiptSchema = Joi.object({
+  ocId: Joi.string().uuid().optional(),
+  fecha: Joi.date().iso().required(),
+  almacenId: Joi.string().uuid().required(),
+  lineas: Joi.array().items(goodsReceiptLineSchema).min(1).required(),
+  referencia: Joi.string().allow('', null)
+});
+
 const quickPurchaseOrderSchema = Joi.object({
   proveedor_id: Joi.string().uuid().optional(),
   proveedor_nombre: Joi.string().allow('', null).default('Proveedor acciones rápidas'),
@@ -87,5 +101,33 @@ purchasingRouter.post(
     });
 
     res.status(201).json({ orden });
+  }
+);
+
+purchasingRouter.post(
+  '/recepciones',
+  authorize('compras:gestionar'),
+  auditTrail('compras.recepciones.crear'),
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { error, value } = goodsReceiptSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
+    if (error) {
+      return res.status(400).json({ message: 'Datos inválidos', details: error.details });
+    }
+
+    if (!req.user) {
+      throw new UnauthorizedError('Usuario no autenticado');
+    }
+
+    const usuarioId = getValidUuid(req.user.id);
+    const recepcion = await service.createGoodsReceipt({
+      ocId: value.ocId,
+      fecha: value.fecha,
+      almacenId: value.almacenId,
+      referencia: value.referencia ?? undefined,
+      lineas: value.lineas,
+      usuarioId
+    });
+
+    res.status(201).json({ recepcion });
   }
 );
