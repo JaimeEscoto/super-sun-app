@@ -119,32 +119,32 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : 'HN';
 
   const defaultDescription =
-    'Selecciona un módulo para navegar por los procesos clave del ERP y utiliza los accesos directos para cambiar de área de trabajo rápidamente.';
+    'Selecciona un módulo desde el menú lateral para navegar por los procesos clave del ERP y mantener el flujo operativo controlado.';
 
   return (
-    <div className="min-h-screen flex bg-slate-50 text-slate-900">
+    <div className="min-h-screen flex bg-slate-100 text-slate-900">
       <aside
-        className={`relative hidden shrink-0 border-r border-slate-200 bg-white transition-all duration-300 lg:flex ${
+        className={`relative hidden shrink-0 border-r border-slate-800 bg-secondary transition-all duration-300 lg:flex ${
           open ? 'w-72' : 'w-24'
         }`}
       >
-        <div className="flex h-full w-full flex-col">
-          <div className="flex items-center justify-between border-b border-slate-200 px-5 py-5">
+        <div className="flex h-full w-full flex-col text-slate-200">
+          <div className="flex items-center justify-between border-b border-slate-800 px-5 py-5">
             <Link to="/" className="flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-lg font-bold text-primary">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/20 text-lg font-bold text-primary">
                 HN
               </span>
               {open && (
                 <div className="space-y-0.5">
                   <p className="text-xs uppercase tracking-[0.45em] text-slate-400">ERP Manufactura</p>
-                  <p className="text-lg font-semibold text-slate-900">Solaris HN</p>
+                  <p className="text-lg font-semibold text-white">Solaris HN</p>
                 </div>
               )}
             </Link>
             <button
               type="button"
               onClick={() => setOpen((prev) => !prev)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-primary/40 hover:text-primary"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700 bg-secondary text-slate-300 transition hover:border-primary/50 hover:text-primary"
             >
               <Menu size={18} />
             </button>
@@ -159,29 +159,29 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <div className="mt-3 flex flex-col gap-1">
                   {section.items.map((item) => {
                     const Icon = item.icon;
-                  return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={({ isActive }) =>
+                    return (
+                      <NavLink
+                        key={item.to}
+                        to={item.to}
+                        className={({ isActive }) =>
                           [
                             'group flex items-center rounded-xl px-3 py-2 text-sm font-medium transition',
                             open ? 'gap-3 justify-start' : 'gap-0 justify-center',
                             isActive
-                              ? 'bg-primary/10 text-primary'
-                              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                              ? 'bg-primary/20 text-white shadow-inner shadow-primary/30'
+                              : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
                           ].join(' ')
                         }
                       >
                         <span
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-primary transition group-hover:border-primary/40 group-hover:text-primary"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-primary transition group-hover:border-primary/50 group-hover:text-primary"
                         >
                           <Icon size={18} />
                         </span>
                         {open && (
                           <span className="flex flex-col truncate">
-                            <span className="truncate text-sm font-medium">{item.label}</span>
-                            <span className="text-xs font-normal text-slate-500">{item.description}</span>
+                            <span className="truncate text-sm font-medium text-slate-100">{item.label}</span>
+                            <span className="text-xs font-normal text-slate-400">{item.description}</span>
                           </span>
                         )}
                       </NavLink>
@@ -192,15 +192,15 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             ))}
           </nav>
 
-          <div className="mt-auto border-t border-slate-200 px-4 py-6">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="mt-auto border-t border-slate-800 px-4 py-6">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-base font-semibold text-primary">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/20 text-base font-semibold text-primary">
                   {initials}
                 </span>
                 {open && (
                   <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-900">{user ? user.email : 'Invitado'}</p>
+                    <p className="text-sm font-semibold text-white">{user ? user.email : 'Invitado'}</p>
                     {user && (
                       <p className="text-xs uppercase tracking-[0.35em] text-slate-500">{user.role}</p>
                     )}
@@ -210,7 +210,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   <button
                     type="button"
                     onClick={logout}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-primary/40 hover:text-primary"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-700 bg-secondary text-slate-300 transition hover:border-primary/50 hover:text-primary"
                     aria-label="Cerrar sesión"
                   >
                     <LogOut size={16} />
@@ -223,52 +223,43 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
+        <header className="border-b border-slate-800 bg-secondary text-slate-100 shadow-lg">
           <div className="flex flex-col gap-6 px-6 py-6 sm:px-8">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.4em] text-slate-500">
+                <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
                   {activeItem?.section ?? 'Panel central'}
                 </p>
-                <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">
+                <h1 className="text-2xl font-semibold text-white md:text-3xl">
                   {activeItem?.label ?? 'Resumen general'}
                 </h1>
-                <p className="max-w-3xl text-sm text-slate-600">
+                <p className="max-w-3xl text-sm text-slate-300">
                   {activeItem?.description ?? defaultDescription}
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-600 shadow-sm lg:max-w-sm">
-                <p className="font-semibold text-slate-900">Consejo de navegación</p>
+              <div className="rounded-2xl border border-slate-700 bg-slate-900/60 p-4 text-xs text-slate-300 shadow-inner lg:max-w-sm">
+                <p className="font-semibold text-white">Atajo administrativo</p>
                 <p className="mt-1 leading-relaxed">
-                  Explora cada módulo desde el menú lateral o selecciona un acceso directo a continuación para ir directo al proceso que necesitas.
+                  Usa el panel lateral para moverte entre módulos y mantener a la vista las transacciones prioritarias de SAP Business One.
                 </p>
               </div>
             </div>
 
-            <nav className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
               {menuItems.map((item) => (
-                <NavLink
+                <span
                   key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    [
-                      'group flex items-start gap-3 rounded-2xl border px-4 py-4 transition',
-                      isActive
-                        ? 'border-primary/50 bg-primary/5 text-primary'
-                        : 'border-slate-200 bg-white hover:border-primary/40 hover:bg-primary/5'
-                    ].join(' ')
-                  }
+                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 transition ${
+                    item.to === activeItem?.to
+                      ? 'border-primary/60 bg-primary/20 text-white'
+                      : 'border-slate-700 bg-slate-900/40'
+                  }`}
                 >
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-primary transition group-hover:border-primary/40 group-hover:text-primary">
-                    <item.icon size={18} />
-                  </span>
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold text-slate-900">{item.label}</p>
-                    <p className="text-xs text-slate-600">{item.description}</p>
-                  </div>
-                </NavLink>
+                  <item.icon size={14} />
+                  <span className="text-[11px] font-medium uppercase tracking-[0.25em]">{item.label}</span>
+                </span>
               ))}
-            </nav>
+            </div>
           </div>
         </header>
 
