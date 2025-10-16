@@ -23,7 +23,7 @@ export class PurchasingService {
     lineas: Array<{ productoId: string; cantidad: number; precio: number; impuestos: number[] }>;
     condicionesPago: string;
     solicitanteId: string;
-    usuarioId: string;
+    usuarioId?: string;
   }) {
     return query(
       `SELECT crear_orden_compra($1::jsonb) as oc_id`,
@@ -35,7 +35,7 @@ export class PurchasingService {
           lineas: payload.lineas,
           condicionesPago: payload.condicionesPago,
           solicitanteId: payload.solicitanteId,
-          usuarioId: payload.usuarioId
+          ...(payload.usuarioId ? { usuarioId: payload.usuarioId } : {})
         })
       ]
     );
@@ -51,7 +51,7 @@ export class PurchasingService {
     condicionesPago?: string;
     total: number;
     referencia?: string;
-    usuarioId: string;
+    usuarioId?: string;
   }) {
     let proveedorId = payload.proveedorId;
 
@@ -74,7 +74,7 @@ export class PurchasingService {
         `INSERT INTO proveedores (nombre, nif, direccion, contactos, banco, retenciones, saldo, created_by)
          VALUES ($1, $2, '{}'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb, 0, $3)
          RETURNING proveedor_id`,
-        [payload.proveedorNombre, rtn, payload.usuarioId]
+        [payload.proveedorNombre, rtn, payload.usuarioId ?? null]
       );
       proveedorId = created.proveedor_id;
     }
@@ -104,7 +104,7 @@ export class PurchasingService {
         payload.moneda,
         condiciones,
         payload.total,
-        payload.usuarioId
+        payload.usuarioId ?? null
       ]
     );
 
@@ -124,7 +124,7 @@ export class PurchasingService {
           estado: payload.estado ?? 'BORRADOR',
           referencia: payload.referencia ?? null
         }),
-        payload.usuarioId
+        payload.usuarioId ?? null
       ]
     );
 
