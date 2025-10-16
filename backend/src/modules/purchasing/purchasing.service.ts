@@ -4,16 +4,57 @@ import { query, queryWithClient, withTransaction } from '../../db/index.js';
 
 export class PurchasingService {
   listPurchaseOrders(status?: string) {
-    const where = status ? 'WHERE estado = $1' : '';
+    const where = status ? 'WHERE oc.estado = $1' : '';
     const params = status ? [status] : [];
     return query(
-      `SELECT oc_id as id, proveedor_id, fecha, estado, moneda, total, impuestos
-       FROM ordenes_compra
+      `SELECT
+         oc.oc_id as id,
+         oc.numero,
+         oc.proveedor_id,
+         p.nombre as proveedor_nombre,
+         oc.fecha,
+         oc.estado,
+         oc.moneda,
+         oc.total,
+         oc.impuestos
+       FROM ordenes_compra oc
+       JOIN proveedores p ON p.proveedor_id = oc.proveedor_id
        ${where}
-       ORDER BY fecha DESC
+       ORDER BY oc.fecha DESC
        LIMIT 100`,
       params
     );
+  }
+
+  async getPurchaseOrderById(id: string) {
+    const [orden] = await query<{
+      id: string;
+      numero: string | null;
+      proveedor_id: string;
+      proveedor_nombre: string;
+      fecha: string;
+      estado: string;
+      moneda: string;
+      total: string;
+      impuestos: string;
+    }>(
+      `SELECT
+         oc.oc_id as id,
+         oc.numero,
+         oc.proveedor_id,
+         p.nombre as proveedor_nombre,
+         TO_CHAR(oc.fecha, 'YYYY-MM-DD') as fecha,
+         oc.estado,
+         oc.moneda,
+         oc.total::TEXT as total,
+         oc.impuestos::TEXT as impuestos
+       FROM ordenes_compra oc
+       JOIN proveedores p ON p.proveedor_id = oc.proveedor_id
+       WHERE oc.oc_id = $1`,
+      [id]
+    );
+
+    return orden ?? null;
   }
 
   async createPurchaseOrder(payload: {
@@ -25,7 +66,7 @@ export class PurchasingService {
     solicitanteId: string;
     usuarioId?: string;
   }) {
-    return query(
+    const [result] = await query<{ oc_id: string }>(
       `SELECT crear_orden_compra($1::jsonb) as oc_id`,
       [
         JSON.stringify({
@@ -35,10 +76,23 @@ export class PurchasingService {
           lineas: payload.lineas,
           condicionesPago: payload.condicionesPago,
           solicitanteId: payload.solicitanteId,
+          estado: 'PENDIENTE',
           ...(payload.usuarioId ? { usuarioId: payload.usuarioId } : {})
         })
       ]
     );
+
+    if (!result?.oc_id) {
+      throw new Error('No se pudo registrar la orden de compra');
+    }
+
+    const orden = await this.getPurchaseOrderById(result.oc_id);
+
+    if (!orden) {
+      throw new Error('No se pudo obtener la orden de compra creada');
+    }
+
+    return orden;
   }
 
   async createQuickPurchaseOrder(payload: {
@@ -93,14 +147,25 @@ export class PurchasingService {
       moneda: string;
       total: string;
       impuestos: string;
+      numero: string | null;
     }>(
-      `INSERT INTO ordenes_compra (proveedor_id, fecha, estado, moneda, condiciones_pago, total, impuestos, created_by)
-       VALUES ($1, $2::date, $3, $4, $5, $6, 0, $7)
-       RETURNING oc_id as id, proveedor_id, fecha, estado, moneda, total, impuestos`,
+      `INSERT INTO ordenes_compra (proveedor_id, fecha, estado, moneda, condiciones_pago, total, impuestos, numero, created_by)
+       VALUES (
+         $1,
+         $2::date,
+         $3,
+         $4,
+         $5,
+         $6,
+         0,
+         'OC-' || TO_CHAR($2::date, 'YYYYMMDD') || '-' || LPAD(nextval('orden_compra_numero_seq')::TEXT, 5, '0'),
+         $7
+       )
+       RETURNING oc_id as id, proveedor_id, fecha, estado, moneda, total, impuestos, numero`,
       [
         proveedorId,
         payload.fecha,
-        payload.estado ?? 'BORRADOR',
+        payload.estado ?? 'PENDIENTE',
         payload.moneda,
         condiciones,
         payload.total,
@@ -121,14 +186,20 @@ export class PurchasingService {
           fecha: payload.fecha,
           moneda: payload.moneda,
           total: payload.total,
-          estado: payload.estado ?? 'BORRADOR',
+          estado: payload.estado ?? 'PENDIENTE',
           referencia: payload.referencia ?? null
         }),
         payload.usuarioId ?? null
       ]
     );
 
-    return orden;
+    const enriched = await this.getPurchaseOrderById(orden.id);
+
+    if (!enriched) {
+      throw new Error('No se pudo obtener la orden rápida registrada');
+    }
+
+    return enriched;
   }
 
   async createGoodsReceipt(payload: {

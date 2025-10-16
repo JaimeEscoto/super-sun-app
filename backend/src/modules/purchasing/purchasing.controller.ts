@@ -83,7 +83,7 @@ purchasingRouter.post(
     const usuarioId = getValidUuid(req.user.id);
 
     if ('proveedorId' in value) {
-      const [orden] = await service.createPurchaseOrder({ ...value, usuarioId });
+      const orden = await service.createPurchaseOrder({ ...value, usuarioId });
       return res.status(201).json({ orden });
     }
 
